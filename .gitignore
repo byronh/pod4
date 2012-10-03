@@ -4,3 +4,5 @@
 *.jar
 *.war
 *.ear
+/GroupUp_Prototype_v0/nbproject/private/
+/GroupUp_Prototype_v0/build/
