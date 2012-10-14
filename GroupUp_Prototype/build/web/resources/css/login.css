@@ -1,0 +1,128 @@
+/* 
+    Document   : login
+    Created on : Oct 13, 2012, 3:37:12 PM
+    Author     : crysng
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+
+body{
+
+    position: absolute;
+    height:70%;
+    width:70%;
+    background-color: #ffffff;
+}
+
+#top{
+    text-transform:uppercase;
+    color: #464e59;
+    letter-spacing: 5px;
+    text-shadow: 3px 3px 0px #eee, 5px 5px 0px #707070;
+    font-size:200%;
+    font-family: 'Exo', sans-serif;
+    padding-left: 20%;
+    float:left;
+}
+
+#content{
+    width:100%;
+    height:100%;
+    float:left;
+}
+
+#bottom{
+    color: #000000;
+    text-align: left;
+    font-size:100%;
+    font-family: 'Exo', sans-serif;
+    float:left;
+}
+
+#login{  
+    position: absolute;
+    float: left;
+    margin-left:30%;
+
+}
+
+#signup{
+    position: absolute;
+    float: left;
+    margin-left:80%;
+
+}
+
+
+
+#login_title{
+    color: #333333;
+    text-transform: uppercase;
+    text-shadow: 0px 2px 3px #666;
+    font-size: 150%;
+    font-family: 'Tahoma', sans-serif;
+}
+
+#signup_title{
+    color: #333333;
+    text-transform: uppercase;
+    text-shadow: 0px 2px 3px #666;
+    font-size: 150%;
+    font-family: 'Tahoma', sans-serif;
+}
+
+form {
+    
+    padding: 20px;
+    height: 300px;
+    width: 250px;
+    border-radius: 20px;
+    font-family: 'Geo', sans-serif;
+    box-shadow:0px 0px 10px gray;
+}
+
+
+.field {
+    width: 230px;
+
+    background: #a0e0e6;
+    padding: 6px;
+    margin-bottom: 10px;
+    border-top: 0.5px solid #5a949a;
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: 0px;
+
+    border-radius: 10px;
+ 	
+/*    ** Adding CSS3 **
+ 
+    ** Transition Selectors - What properties to animate and how long **
+    -webkit-transition-property: -webkit-box-shadow, background;
+    -webkit-transition-duration: 0.25s;
+ 
+    ** Adding a small shadow **
+    -moz-box-shadow: 0px 0px 2px #000;
+    -webkit-box-shadow: 0px 0px 2px #000;*/
+}
+
+.field:hover {
+    box-shadow: 0px 0px 4px #000;
+    background: #caf1f4;
+}
+
+.submitB {
+
+    cursor: pointer;
+    width: 100px;
+    height: 30px;
+    color: #fff;
+    margin-top: 10px;
+    border-radius: 10px;
+    background: linear-gradient(to bottom, rgba(109,179,242,1) 0%,rgba(84,163,238,1) 26%,rgba(54,144,240,1) 66%,rgba(30,105,222,1) 100%);
+}
