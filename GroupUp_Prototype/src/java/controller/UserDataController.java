@@ -27,7 +27,7 @@ import model.UserData;
 @SessionScoped
 public class UserDataController implements Serializable {
 
-    @PersistenceContext 
+    @PersistenceContext
     private EntityManager em;
     
     @Resource
