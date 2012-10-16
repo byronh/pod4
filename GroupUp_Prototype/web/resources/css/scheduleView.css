@@ -1,0 +1,28 @@
+/* 
+    Document   : scheduleView.css
+    Created on : Oct 16, 2012, 12:48:49 PM
+    Author     : crysng
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display:block;
+}
+
+
+/*body{
+    background-color:blue;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: auto;
+    height: 50%; 
+    max-height: 50%; 
+    position: relative;
+}*/
+#scheduleForm {
+    width: 55%;
+    left: 20%;
+    position: relative;
+}

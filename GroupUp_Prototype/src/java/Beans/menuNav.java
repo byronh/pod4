@@ -6,13 +6,14 @@ package Beans;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author crysng
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class menuNav {
     
     private String pageName= "/ScheduleView";
