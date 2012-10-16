@@ -12,16 +12,18 @@
 
 
             <ui:define name="content">
+                
                 <h:form id="menu">
+                    <!--<p:ajax render=":contentPanel">-->
                     <p:menu >  
                         <p:submenu label="Schedule">  
-                            <p:menuitem value="View" actionListener="#{menuNav.setPageName('/ViewSchedule')}"
-                         icon="ui-icon-calendar" />  
-                            <p:menuitem value="Edit" action="#{menuNav.setPageName('/ViewEdit')}" icon="ui-icon-pencil"/>  
+                            <p:menuitem value="View" action="#{menuNav.setPageName('/ScheduleView')}"
+                                        update=":contentPanel" icon="ui-icon-calendar"/> 
+                            <p:menuitem value="Edit" action="#{menuNav.setPageName('/ScheduleEdit')}" update=":contentPanel" icon="ui-icon-pencil"/>  
                         </p:submenu>  
                         <p:submenu label="Group">  
-                            <p:menuitem value="View/Edit" actionListener="#{menuBean.delete}"  ajax="false" icon="ui-icon-person"/>
-                            <p:menuitem value="Schedule Events" actionListener="#{menuBean.delete}" ajax="false" icon="ui-icon-clock"/>
+                            <p:menuitem value="View/Edit"  action="#{menuNav.setPageName('/ScheduleView')}" update=":contentPanel" icon="ui-icon-person"/>
+                            <p:menuitem value="Create Events"  actionListener="#{menuNav.setPageName('/login')}" icon="ui-icon-clock"/>
                         </p:submenu>  
                         <p:submenu label="People">  
                             <p:menuitem value="Search"  icon="ui-icon-search"/>  
@@ -32,8 +34,7 @@
                             <p:menuitem value="Confirmed" outcome="/mobile/index" icon="ui-icon-star"/>
                         </p:submenu>  
                     </p:menu> 
-                    
-                    
+                    <!--</p:ajax>-->
                 </h:form>
                 <p:panel id="contentPanel" header="#{menuNav.pageName}" >  
                         <ui:include src="#{menuNav.pageName}.xhtml"/>
