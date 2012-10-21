@@ -1,11 +1,11 @@
 *.class
 
 # Package Files #
-*.jar
-*.war
+#*.jar
+#*.war
 *.ear
-/GroupUp_Prototype_v0/nbproject/private/
-/GroupUp_Prototype_v0/build/
 /GroupUp_Prototype/nbproject/private/
 /GroupUp_Prototype/build/
-/GroupUp_Prototype/dist/
+#/GroupUp_Prototype/dist/
+/nbproject/private/
+/build/
