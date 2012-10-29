@@ -11,16 +11,16 @@
     <body>
         
         <ui:composition template="../WEB-INF/templates/loginTemplate.xhtml">
-
+            <h:messages></h:messages>
             <ui:define name="content">
                 <div id="login">
                     <h:panelGrid id="login_title">LOG IN</h:panelGrid>
                     <h:form>
                         <h:outputText value="Email:"    />
-                        <h:inputText styleClass="field" value="" title="email" id="email"></h:inputText>
+                        <h:inputText styleClass="field" value="#{loginController.email}" title="email" id="email"></h:inputText>
                         <h:outputText value="Password:"    />
-                        <h:inputSecret styleClass="field" value="" title="password" id="password"></h:inputSecret>
-                        <h:commandButton styleClass="submitB"  action="show" value="Login!"></h:commandButton>
+                        <h:inputSecret styleClass="field" value="#{loginController.password}" title="password" id="password"></h:inputSecret>
+                        <h:commandButton styleClass="submitB" action="#{loginController.login}" value="Log In!"></h:commandButton>
                     </h:form>
                 </div>
                 
@@ -28,16 +28,16 @@
                     <h:panelGrid id="signup_title">SIGN UP</h:panelGrid>
                     <h:form>
                         <h:outputText value="First Name:"    />
-                        <h:inputText styleClass="field" value="" title="firstName" id="fname"></h:inputText>
+                        <h:inputText styleClass="field" value="#{loginController.firstName}" title="firstName" id="fname"></h:inputText>
                         <h:outputText value="Last Name:"    />
-                        <h:inputText styleClass="field" value="" title="lastName" id="lname"></h:inputText>
+                        <h:inputText styleClass="field" value="#{loginController.lastName}" title="lastName" id="lname"></h:inputText>
                         <h:outputText value="Email:"    />
-                        <h:inputText styleClass="field" value="" title="email" id="email"></h:inputText>
+                        <h:inputText styleClass="field" value="#{loginController.email}" title="email" id="email"></h:inputText>
                         <h:outputText value="Password:"    />
-                        <h:inputSecret styleClass="field" value="" title="password" id="password"></h:inputSecret>
+                        <h:inputSecret styleClass="field" value="#{loginController.password}" title="password" id="password"></h:inputSecret>
                         <h:outputText value="Confirm Password:"    />
-                        <h:inputSecret styleClass="field" value="" title="confirmPassword" id="confirm_password"></h:inputSecret>
-                        <h:commandButton styleClass="submitB" action="show" value="Get Account!"></h:commandButton>
+                        <h:inputSecret styleClass="field" value="#{loginController.confirmPassword}" title="confirmPassword" id="confirm_password"></h:inputSecret>
+                        <h:commandButton styleClass="submitB" action="#{loginController.registerNewUser}" value="Register New Account!"></h:commandButton>
                     </h:form>
                 </h:panelGrid>
              

@@ -21,33 +21,31 @@
     <welcome-file-list>
         <welcome-file>faces/facelets/login.xhtml</welcome-file>
     </welcome-file-list>
-    <context-param>  
-        <param-name>primefaces.THEME</param-name>  
-        <param-value>bootstrap</param-value>  
-    </context-param> 
-    <!--
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>bootstrap</param-value>
+    </context-param>
     <security-constraint>
-        <display-name>UserLoginConstraint</display-name>
+        <display-name>LoginConstraint</display-name>
         <web-resource-collection>
-            <web-resource-name>GroupUpScheduler</web-resource-name>
+            <web-resource-name>userData</web-resource-name>
             <description/>
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
-        <auth-constraint>
+        <user-data-constraint>
             <description/>
-            <role-name>USER</role-name>
-        </auth-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
     </security-constraint>
     <login-config>
         <auth-method>FORM</auth-method>
-        <realm-name>GroupUpRealm</realm-name>
+        <realm-name>groupup-realm</realm-name>
         <form-login-config>
-            <form-login-page>/login.xhtml</form-login-page>
-            <form-error-page>/loginerror.xhtml</form-error-page>
+            <form-login-page>/facelets/login.xhtml</form-login-page>
+            <form-error-page>/facelets/loginerror.xhtml</form-error-page>
         </form-login-config>
     </login-config>
     <security-role>
-        <description/>
         <role-name>USER</role-name>
-    </security-role> -->
+    </security-role>
 </web-app>
