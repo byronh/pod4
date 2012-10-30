@@ -15,19 +15,19 @@
                 <h:outputText value="Group Name"    />
                 <h:inputText styleClass="field" value="#{groupController.name}" title="groupName" id="groupName"></h:inputText>
 
-                <h3>PickList on Steroids: Pojo Support with Effect, Captions, Custom Content, Reordering, Filtering and Ajax Transfer</h3>  
-                <p:pickList id="pojoPickList" value="#{ExampleOfCreateGroupPickListBean.players}" var="user" effect="bounce"  
-                            itemValue="#{user}" itemLabel="#{user.firstName}" converter="user"  
+                <h3>This is just a view. The controller still need to be completed by controller team so that data could be displayed here</h3>  
+                <p:pickList id="pojoPickList" value="#{pickListController.players}" var="user" effect="bounce"  
+                            itemValue="#{user}" itemLabel="#{user.firstName}" converter="userConverter"  
                             showSourceControls="true" showTargetControls="true"   
                             showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 
-                    <f:facet name="sourceCaption">Available</f:facet>  
-                    <f:facet name="targetCaption">Starting</f:facet>  
+                    <f:facet name="sourceCaption">Your Friend List</f:facet>  
+                    <f:facet name="targetCaption">Member in New Group</f:facet>  
 
-                    <p:ajax event="transfer" listener="#{pickListBean.onTransfer}" update="msg" />  
+                    <p:ajax event="transfer" listener="#{pickListController.onTransfer}"  />  
 
                     <p:column style="width:25%">  
-                        <p:graphicImage value="/images/barca/#{user.email}" width="30" height="40" />  
+                        <p:graphicImage value="/resources/images/default.jpg" width="30" height="40" />  
                     </p:column>  
 
                     <p:column style="width:75%;">  
@@ -38,29 +38,16 @@
 
                 <p:commandButton id="pojoSubmit" value="Submit" update="displayPlayers" oncomplete="playerDialog.show()" style="margin-top:5px"/>  
 
-                <p:dialog modal="true" showEffect="fade" hideEffect="fade" widgetVar="cityDialog">  
-                    <h:panelGrid id="displayCities" columns="2">  
-                        <h:outputText value="Source: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{pickListBean.cities.source}" var="item">  
-                            <h:outputText value="#{item}" style="margin-right:5px" />  
-                        </ui:repeat>  
-
-                        <h:outputText value="Target: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{pickListBean.cities.target}" var="item">  
-                            <h:outputText value="#{item}" style="margin-right:5px" />  
-                        </ui:repeat>  
-                    </h:panelGrid>  
-                </p:dialog>  
 
                 <p:dialog modal="true" showEffect="fade" hideEffect="fade" widgetVar="playerDialog">  
                     <h:panelGrid id="displayPlayers" columns="2">  
                         <h:outputText value="Source: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{pickListBean.players.source}" var="player">  
+                        <ui:repeat value="#{pickListController.players.source}" var="player">  
                             <h:outputText value="#{player.firstName}" style="margin-right:5px" />  
                         </ui:repeat>  
 
                         <h:outputText value="Target: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{pickListBean.players.target}" var="player">  
+                        <ui:repeat value="#{pickListController.players.target}" var="player">  
                             <h:outputText value="#{player.firstName}" style="margin-right:5px" />  
                         </ui:repeat>  
                     </h:panelGrid>  

@@ -9,17 +9,19 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
 import model.User;
 
 /**
  *
  * @author Shuyi
  */
+@FacesConverter(forClass=User.class,value="userConverter")
 public class UserConverter implements Converter {
 
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        if (value.trim().equals("")) {
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {   User user = new User();   user.setFirstName("Shuyi"); return user;
+       /* if (value.trim().equals("")) {
             return null;
         } else {
             try {
@@ -30,7 +32,7 @@ public class UserConverter implements Converter {
             }
         }
 
-        return null;
+        return null;*/
     }
 
     @Override

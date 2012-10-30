@@ -13,11 +13,16 @@ package view;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import model.User;
 import org.primefaces.event.TransferEvent;
 
 import org.primefaces.model.DualListModel;
+  
+@ManagedBean(name = "pickListController")
+@ViewScoped
 
 public class ExampleOfCreateGroupPickListBean {
 
