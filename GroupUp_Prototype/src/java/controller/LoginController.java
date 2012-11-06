@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
@@ -131,7 +132,7 @@ public class LoginController implements Serializable {
         // get current JSF context which is in charge of rendering the web page
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        
+        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
         String message = "";
         try {
             //Login
@@ -147,7 +148,7 @@ public class LoginController implements Serializable {
             }
             
             context.addMessage(null, new FacesMessage(message));
-            return "/faces/facelets/ScheduleView.xhtml";
+            return "/faces/facelets/ScheduleView.xhtml?faces-redirect=true";
             
         } catch (ServletException e) {
             e.printStackTrace();
@@ -165,8 +166,7 @@ public class LoginController implements Serializable {
         if(session != null){
             session.invalidate();
         }
-        System.out.println("HERERERERE");
-        return "/faces/login.xhtml";
+        return "/faces/index.xhtml?faces-redirect=true";
     }
     
     public LoginController() {

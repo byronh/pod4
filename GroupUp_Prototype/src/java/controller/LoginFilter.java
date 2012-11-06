@@ -49,18 +49,21 @@ public class LoginFilter implements Filter {
             throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         String currentURL = httpRequest.getRequestURI().toString();
-        System.out.println(httpRequest.getContextPath());
+        System.out.println("LoginFilter::doFilter - Accessing URL: " + currentURL);
             
         if (currentURL.contains(ResourceHandler.RESOURCE_IDENTIFIER) || httpRequest.getUserPrincipal() == null) {
             // We want to normally display when we are loading a resource or there is no user logged in
+            System.out.println("LoginFilter::doFilter - Resource or null");
             chain.doFilter(request, response);
-        } else if (httpRequest.getUserPrincipal() != null && 
-                (currentURL.substring(0, currentURL.length()-1).equals(httpRequest.getContextPath()) || currentURL.contains("login.xhtml"))) {
-            // Above logic is a bit inefficient, but it makes sure that it only redirects the login / default page.
-            // serverside forwarding, not clientside redirect through path url if there is a valid user session
-            httpRequest.getRequestDispatcher("/faces/facelets/ScheduleView.xhtml").forward(request, response);
+        } else if (httpRequest.getUserPrincipal() != null && currentURL.contains("login.xhtml")) {
+            // Does redirecting on client side so the URL changes, instead of a server forward which doesn't change URL.
+            System.out.println("LoginFilter::doFilter - Log in page + session exists: " + httpRequest.getSession().getId());
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces/facelets/ScheduleView.xhtml");
+            //httpRequest.getRequestDispatcher("/faces/facelets/ScheduleView.xhtml").forward(request, response);
         } else {
+            System.out.println("Filter: Displaying normally");
             chain.doFilter(request, response);
         }
 }

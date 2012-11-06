@@ -50,8 +50,8 @@ and open the template in the editor.
             <h:outputLabel for="allDay" value="All Day:" />  
             <h:selectBooleanCheckbox id="allDay" value="" />  
   
-            <p:commandButton type="reset" vaxlue="Reset" />  
-            <p:commandButton value="Save"  oncomplete="myschedule.update();eventDialog.hide();"/>  
+            <p:commandButton type="reset" value="Reset" />  
+            <p:commandButton value="Save" action="#{scheduleController.addEvent}" oncomplete="myschedule.update();eventDialog.hide();"/>  
         </h:panelGrid>  
         </p:dialog>  
         
