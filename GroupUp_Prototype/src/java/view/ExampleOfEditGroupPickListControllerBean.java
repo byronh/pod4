@@ -21,16 +21,16 @@ import org.primefaces.event.TransferEvent;
 
 import org.primefaces.model.DualListModel;
   
-@ManagedBean(name = "pickListController")
+@ManagedBean(name = "pickListControllerOfEditGroup")
 @ViewScoped
 
-public class ExampleOfCreateGroupPickListBean {
+public class ExampleOfEditGroupPickListControllerBean {
 
 	private DualListModel<User> players;
 	
 	private DualListModel<String> cities;
 
-	public ExampleOfCreateGroupPickListBean() {
+	public ExampleOfEditGroupPickListControllerBean() {
 		//Players
 		List<User> source = new ArrayList<User>();
 		List<User> target = new ArrayList<User>();

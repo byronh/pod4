@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <div id="groupInfo">
+            <h:panelGrid id="groupInfo_title">Change Group Member</h:panelGrid>
+            <h:form>
+                <h3>This is just a view. The controller still need to be completed by controller team so that data could be displayed here</h3>  
+                <p:pickList id="pojoPickList" value="#{pickListControllerOfEditGroup.players}" var="user" effect="bounce"  
+                            itemValue="#{user}" itemLabel="#{user.firstName}" converter="userConverter"  
+                            showSourceControls="true" showTargetControls="true"   
+                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
+
+                    <f:facet name="sourceCaption">People outside the Group</f:facet>  
+                    <f:facet name="targetCaption">People in the Group</f:facet>  
+
+                    <p:ajax event="transfer" listener="#{pickListControllerOfEditGroup.onTransfer}"  />  
+
+                    <p:column style="width:25%">  
+                        <p:graphicImage value="/resources/images/default.jpg" width="30" height="40" />  
+                    </p:column>  
+
+                    <p:column style="width:75%;">  
+                        #{user.firstName}  
+                    </p:column>  
+
+                </p:pickList>  
+
+                <p:commandButton id="pojoSubmit" value="Submit" update="displayPlayers" oncomplete="playerDialog.show()" style="margin-top:5px"/>  
+
+
+                <p:dialog modal="true" showEffect="fade" hideEffect="fade" widgetVar="playerDialog">  
+                    <h:panelGrid id="displayPlayers" columns="2">  
+                        <h:outputText value="Source: " style="font-weight:bold"/>  
+                        <ui:repeat value="#{pickListControllerOfEditGroup.players.source}" var="player">  
+                            <h:outputText value="#{player.firstName}" style="margin-right:5px" />  
+                        </ui:repeat>  
+
+                        <h:outputText value="Target: " style="font-weight:bold"/>  
+                        <ui:repeat value="#{pickListControllerOfEditGroup.players.target}" var="player">  
+                            <h:outputText value="#{player.firstName}" style="margin-right:5px" />  
+                        </ui:repeat>  
+                    </h:panelGrid>  
+                </p:dialog>  
+            </h:form>
+        </div>
+    </h:body>
+</html>
+
