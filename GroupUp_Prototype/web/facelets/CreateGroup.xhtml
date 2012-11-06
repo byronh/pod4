@@ -16,7 +16,7 @@
                 <h:inputText styleClass="field" value="#{groupController.name}" title="groupName" id="groupName"></h:inputText>
 
                 <h3>This is just a view. The controller still need to be completed by controller team so that data could be displayed here</h3>  
-                <p:pickList id="pojoPickList" value="#{pickListController.players}" var="user" effect="bounce"  
+                <p:pickList id="pojoPickList" value="#{pickListControllerOfCreateGroup.players}" var="user" effect="bounce"  
                             itemValue="#{user}" itemLabel="#{user.firstName}" converter="userConverter"  
                             showSourceControls="true" showTargetControls="true"   
                             showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
@@ -24,7 +24,7 @@
                     <f:facet name="sourceCaption">Your Friend List</f:facet>  
                     <f:facet name="targetCaption">Member in New Group</f:facet>  
 
-                    <p:ajax event="transfer" listener="#{pickListController.onTransfer}"  />  
+                    <p:ajax event="transfer" listener="#{pickListControllerOfCreateGroup.onTransfer}"  />  
 
                     <p:column style="width:25%">  
                         <p:graphicImage value="/resources/images/default.jpg" width="30" height="40" />  
@@ -42,12 +42,12 @@
                 <p:dialog modal="true" showEffect="fade" hideEffect="fade" widgetVar="playerDialog">  
                     <h:panelGrid id="displayPlayers" columns="2">  
                         <h:outputText value="Source: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{pickListController.players.source}" var="player">  
+                        <ui:repeat value="#{pickListControllerOfCreateGroup.players.source}" var="player">  
                             <h:outputText value="#{player.firstName}" style="margin-right:5px" />  
                         </ui:repeat>  
 
                         <h:outputText value="Target: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{pickListController.players.target}" var="player">  
+                        <ui:repeat value="#{pickListControllerOfCreateGroup.players.target}" var="player">  
                             <h:outputText value="#{player.firstName}" style="margin-right:5px" />  
                         </ui:repeat>  
                     </h:panelGrid>  
