@@ -57,8 +57,8 @@
         <auth-method>FORM</auth-method>
         <realm-name>groupup-realm</realm-name>
         <form-login-config>
-            <form-login-page>/login.xhtml</form-login-page>
-            <form-error-page>/facelets/loginerror.xhtml</form-error-page>
+            <form-login-page>/faces/login.xhtml</form-login-page>
+            <form-error-page>/faces/facelets/loginerror.xhtml</form-error-page>
         </form-login-config>
     </login-config>
     <security-role>
