@@ -4,6 +4,7 @@
  */
 package controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.Principal;
@@ -11,6 +12,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -163,7 +165,8 @@ public class LoginController implements Serializable {
         if(session != null){
             session.invalidate();
         }
-        return "login.xhtml";
+        System.out.println("HERERERERE");
+        return "/faces/login.xhtml";
     }
     
     public LoginController() {

@@ -62,4 +62,5 @@ public class ScheduleController implements Serializable {
         currentEvent = new DefaultScheduleEvent("", selectEvent.getDate(), selectEvent.getDate());  
     }
     
+    
 }

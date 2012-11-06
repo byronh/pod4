@@ -10,10 +10,19 @@ and open the template in the editor.
       xmlns:f="http://java.sun.com/jsf/core">
 <h:outputStylesheet library="css" name="scheduleView.css"/>
         
+    <h:head></h:head>
+    
     <body>
         
+    <h:messages></h:messages>
+    
+    <h:form id="logoutForm">
+        <h:commandButton styleClass="submitB" action="#{loginController.logout}" value="Log Out"></h:commandButton>
+    </h:form>
+    
     <h:form id="scheduleForm">  
-            
+        
+
         <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule">  
       
             <p:ajax event="dateSelect" listener="#{scheduleController.onDateSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
