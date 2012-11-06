@@ -55,7 +55,9 @@ public class LoginFilter implements Filter {
         if (currentURL.contains(ResourceHandler.RESOURCE_IDENTIFIER) || httpRequest.getUserPrincipal() == null) {
             // We want to normally display when we are loading a resource or there is no user logged in
             chain.doFilter(request, response);
-        } else if (httpRequest.getUserPrincipal() != null) {
+        } else if (httpRequest.getUserPrincipal() != null && 
+                (currentURL.substring(0, currentURL.length()-1).equals(httpRequest.getContextPath()) || currentURL.contains("login.xhtml"))) {
+            // Above logic is a bit inefficient, but it makes sure that it only redirects the login / default page.
             // serverside forwarding, not clientside redirect through path url if there is a valid user session
             httpRequest.getRequestDispatcher("/faces/facelets/ScheduleView.xhtml").forward(request, response);
         } else {
