@@ -29,10 +29,28 @@ body{
     
 }
 
+#menu{
+    position: fixed; 
+    top: 15%; /*Set top value to HeightOfTopFrameDiv*/
+    left: 2%;
+    right: 0;
+    bottom: 70px; /*Set bottom value to HeightOfBottomFrameDiv*/
+    overflow: auto; 
+    width:15%;
+    
+/*    #menu{
+    position: inherit;
+    top:40%;
+    left: 10%;
+    float:left;
+    width:40%;
+}*/
+}
+
 #content{
     position: fixed; 
     top: 50px; /*Set top value to HeightOfTopFrameDiv*/
-    left: 0;
+    left: 200px;
     right: 0;
     bottom: 70px; /*Set bottom value to HeightOfBottomFrameDiv*/
     overflow: auto; 
@@ -76,13 +94,7 @@ body{
     bottom:3%;
 }
 
-#menu{
-    position: inherit;
-    top:20%;
-    left: 2%;
-    float:left;
-    width:15%;
-}
+
 
 #contentPanel{
     
@@ -93,3 +105,4 @@ body{
     float:left;
     height:80%;
 }
+
