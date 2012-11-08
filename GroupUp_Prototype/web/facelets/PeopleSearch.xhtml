@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"  
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:p="http://primefaces.org/ui">        
+    
+
+    <body>
+
+        <ui:composition template="../WEB-INF/templates/UserAccountTemplate.xhtml">
+
+
+            <ui:define name="content">
+                               
+                <p:panel id="contentPanel" header="People Search" >  
+                    
+                        <h:form id="peopleForm" >
+                            <h:outputLabel value="Search People: "/>  
+                            <p:inputText id="searchTerm" required="true" label="Keyword" />  
+                            <p:watermark for="searchTerm" value="By Name/Email/Class" />  
+                           
+                            <br/><br/><br/><br/>
+                            <p:panel id="class_details" header="User's Details" style="width:30%; position: fixed; bottom: 30%;">
+                                <h:outputLabel value="Name: "/>
+                                <br/><br/>
+                                <h:outputLabel value="Public Share: "/>
+                                <br/><br/>
+              
+                                <!--Or Remove from Schedule-->
+                                <p:button value="Add to Group" />  
+                            </p:panel>
+                               
+                        </h:form>
+                       <h:form id="edit_right_form" style="position:fixed; top:15%; right:5%;width: 40%">  
+        
+            
+                            <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule"  draggable="true" >  
+                            </p:schedule>  
+
+
+                        </h:form>  
+                        
+                        
+                </p:panel>  
+                
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
+
+
