@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.1"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd">
+
+
+    <navigation-rule>
+        <!--<from-view-id>/UserAccount.xhtml</from-view-id>-->
+        <navigation-case>
+            <from-outcome>Schedule View</from-outcome>
+            <to-view-id>faces/facelets/ScheduleView.xhtml</to-view-id> 
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>Schedule Edit</from-outcome>
+            <to-view-id>faces/facelets/ScheduleEdit.xhtml</to-view-id> 
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>Create Group</from-outcome>
+            <to-view-id>faces/facelets/CreateGroup.xhtml</to-view-id> 
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>Search People</from-outcome>
+            <to-view-id>faces/facelets/PeopleSearch.xhtml</to-view-id> 
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>New Invites</from-outcome>
+            <to-view-id>faces/facelets/NewInvites.xhtml</to-view-id> 
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>Events Pending</from-outcome>
+            <to-view-id>faces/facelets/EventsPending.xhtml</to-view-id> 
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>test</from-outcome>
+            <to-view-id>faces/facelets/ScheduleEdit.xhtml</to-view-id> 
+        </navigation-case>
+    </navigation-rule>
+        
+</faces-config>
