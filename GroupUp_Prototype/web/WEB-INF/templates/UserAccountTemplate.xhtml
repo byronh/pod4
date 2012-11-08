@@ -24,8 +24,30 @@
             </div>
             <p:separator id="topSeparator"/>    
         </div>
-
-        <div id="content" class="center_content">
+        <div id="menu" class="left_content">
+            <h:form id="menu">
+                    <p:panel header="Schedule" style="width:90%;">
+                        <p:button style="border: none;background: none;" outcome="Schedule View" value="View Schedule" icon="ui-icon-calendar"/>
+                        <p:button style="border: none;background: none;" outcome="Schedule Edit" value="Edit Schedule" icon="ui-icon-pencil"/>
+                    </p:panel>
+                    
+                    <p:panel header="Group" style="width:90%;">
+                        <p:button style="border: none;background: none;" outcome="Create Group" value="View/Edit" icon="ui-icon-person"/>
+                        <p:button style="border: none;background: none;" outcome="test" value="Create Events" icon="ui-icon-clock"/>
+                    </p:panel>
+                    
+                    <p:panel header="People" style="width:90%;">
+                        <p:button style="border: none;background: none;" outcome="Search People" value="Search" icon="ui-icon-search"/>
+                    </p:panel>
+                    
+                    <p:panel header="Event" style="width:90%;">
+                        <p:button style="border: none;background: none;" outcome="New Invites" value="New Invites" icon="ui-icon-lightbulb"/>
+                        <p:button style="border: none;background: none;" outcome="Events Pending" value="Pending" icon="ui-icon-clock"/>
+                        <!--<p:button style="border: none;background: none;" outcome="test" value="Confirmed" icon="ui-icon-star"/>-->
+                    </p:panel>
+            </h:form>
+        </div>
+        <div id="content" class="right_content">
             <ui:insert name="content">Content</ui:insert>
         </div>
         
