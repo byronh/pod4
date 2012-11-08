@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"  
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:p="http://primefaces.org/ui">        
+    
+
+    <body>
+
+        <ui:composition template="../WEB-INF/templates/UserAccountTemplate.xhtml">
+
+
+            <ui:define name="content">
+                               
+                <p:panel id="contentPanel" header="New Invites" >  
+                    <h3>You have 3 New Invites!!</h3> 
+                    
+                            <p:accordionPanel>  
+        <p:tab title="Alex Rowe Invites You to Study">  
+            <h:panelGrid columns="2" cellpadding="10">  
+                <h:outputLabel value="Date: Nov 11, 2012"/>
+                               <br/>
+                <h:outputLabel value="Recurring: No"/>
+                                <br/>
+                <h:outputLabel value="Time: 12:00pm"/>
+                               <br/>
+                <h:outputLabel value="Location: ???"/>
+                                <br/>
+                <h:outputText  
+                    value="Message: Hi! Would you like to join our study group?" />  
+                <br/>
+                <p:button value="Accept" /> 
+                <p:button value="Decline" />
+                
+            </h:panelGrid>  
+        </p:tab>  
+        <p:tab title="Laura Khan Invites You to Project Meeting">  
+                        <h:panelGrid columns="2" cellpadding="10">  
+                <h:outputLabel value="Date: Nov 13, 2012"/>
+                               <br/>
+                <h:outputLabel value="Recurring: No"/>
+                               <br/>
+                <h:outputLabel value="Time: 08:00pm"/>
+                                <br/>
+                <h:outputLabel value="Location: ???"/>
+                                <br/>
+                <h:outputText  
+                    value="Message: Hi! Would you like to join our Project Meeting?" />  
+                <br/>
+                <p:button value="Accept" /> 
+                <p:button value="Decline" />
+                
+            </h:panelGrid> 
+        </p:tab>  
+        <p:tab title="Adam Jones Invites you to Assignment Discussion">  
+                       <h:panelGrid columns="2" cellpadding="10">  
+                <h:outputLabel value="Date: Nov 15, 2012"/>
+                               <br/>
+                <h:outputLabel value="Recurring: Weekly"/>
+                                <br/>
+                <h:outputLabel value="Time: 05:00pm"/>
+                                <br/>
+                <h:outputLabel value="Location: ???"/>
+                                <br/>
+                <h:outputText  
+                    value="Message: Hi! Would you like to join our discussion?" />  
+                <br/>
+                <p:button value="Accept" /> 
+                <p:button value="Decline" />
+                
+            </h:panelGrid> 
+        </p:tab>  
+    </p:accordionPanel>  
+                        
+                        
+                </p:panel>  
+                
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
+
+
