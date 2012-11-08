@@ -3,12 +3,95 @@
 To change this template, choose Tools | Templates
 and open the template in the editor.
 -->
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>Schedule Edit</title>
-    </head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"  
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:p="http://primefaces.org/ui">
+
+<!--<h:outputStylesheet library="css" name="scheduleEdit.css"/>-->
+        
+    
+
     <body>
-        <div>Schedule Edit content</div>
+
+        <ui:composition template="../WEB-INF/templates/UserAccountTemplate.xhtml">
+
+
+            <ui:define name="content">
+                               
+                <p:panel id="contentPanel" header="Schedule Edit" >  
+                       <h:form id="scheduleForm" style="width: 55%">  
+        
+            
+                            <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule"  draggable="true">  
+
+                                <p:ajax event="dateSelect" listener="#{scheduleController.onDateSelect}" onstart="eventDialog.show()" />  
+                                <!--<p:ajax event="eventSelect" listener="#{scheduleController.onEventSelect}" update="eventDetails" oncomplete="eventDialog.show()" />-->  
+                                <!--<p:ajax event="eventMove" listener="#{scheduleController.onEventMove}" update="messages" />-->  
+                                <!--<p:ajax event="eventResize" listener="#{scheduleController.onEventResize}" update="messages" />-->  
+
+                            </p:schedule>  
+                            
+                           <p:button value="Save Changes" />
+                           <p:button value="Clear Schedule" />
+                           
+
+                            <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">  
+                            <h:panelGrid id="eventDetails" columns="2">  
+                                <h:outputLabel for="title" value="Title:" />  
+                                <p:inputText id="title" value=""  required="true"/>  
+
+                                <h:outputLabel for="from" value="From:" />  
+                                <p:inputMask id="from" value=""  mask="99/99/9999">  
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />  
+                                </p:inputMask>  
+
+                                <h:outputLabel for="to" value="To:" />  
+                                <p:inputMask id="to" value=""  mask="99/99/9999">  
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />  
+                                </p:inputMask>  
+
+                                <h:outputLabel for="allDay" value="All Day:" />  
+                                <h:selectBooleanCheckbox id="allDay" value="" />  
+
+                                <p:commandButton type="reset" value="Reset" />  
+                                <p:commandButton value="Save"  oncomplete="myschedule.update();eventDialog.hide();"/>  
+                            </h:panelGrid>  
+                            </p:dialog>  
+
+
+                        </h:form>  
+                        
+                        <h:form id="edit_right_form" style="position:fixed;  top:15%; right:15%;width:20%;">
+                            <h:outputLabel value="Search UBC Course: "/>  
+                            <p:inputText id="searchTerm" required="true" label="Keyword" />  
+                            <p:watermark for="searchTerm" value="By name or ID" />  
+                           
+                            <br/><br/><br/><br/>
+                            <p:panel id="class_details" header="Course Details">
+                                <h:outputLabel value="Course: "/>
+                                <br/><br/>
+                                <h:outputLabel value="Sessions: "/>
+                                <br/><br/>
+                                <h:outputLabel value="Times: "/>
+                                <br/><br/>
+                                <h:outputLabel value="Location: "/>
+                                <br/><br/>
+                                <!--Or Remove from Schedule-->
+                                <p:button value="Add to Schedule" />  
+                            </p:panel>
+                               
+                        </h:form>
+                </p:panel>  
+                
+                
+            </ui:define>
+
+        </ui:composition>
+
     </body>
 </html>
+
+
