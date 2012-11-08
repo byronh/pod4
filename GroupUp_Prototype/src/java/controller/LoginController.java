@@ -4,6 +4,7 @@
  */
 package controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.Principal;
@@ -11,12 +12,14 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
@@ -129,7 +132,7 @@ public class LoginController implements Serializable {
         // get current JSF context which is in charge of rendering the web page
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        
+        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
         String message = "";
         try {
             //Login
@@ -145,7 +148,7 @@ public class LoginController implements Serializable {
             }
             
             context.addMessage(null, new FacesMessage(message));
-            return "/faces/facelets/ScheduleView.xhtml";
+            return "/faces/facelets/ScheduleView.xhtml?faces-redirect=true";
             
         } catch (ServletException e) {
             e.printStackTrace();
@@ -163,7 +166,7 @@ public class LoginController implements Serializable {
         if(session != null){
             session.invalidate();
         }
-        return "login.xhtml";
+        return "/faces/index.xhtml?faces-redirect=true";
     }
     
     public LoginController() {

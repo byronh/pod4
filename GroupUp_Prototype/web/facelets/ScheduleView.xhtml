@@ -13,7 +13,7 @@ and open the template in the editor.
 <!--<h:outputStylesheet library="css" name="scheduleView.css"/>-->
         
     
-
+    
     <body>
 
         <ui:composition template="../WEB-INF/templates/UserAccountTemplate.xhtml">
@@ -23,8 +23,7 @@ and open the template in the editor.
                                
                 <p:panel id="contentPanel" header="Schedule View" >  
                     <h:form id="scheduleForm" style="width: 55%">  
-        
-            
+                    
                             <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule">  
 
                                 <p:ajax event="dateSelect" listener="#{scheduleController.onDateSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  

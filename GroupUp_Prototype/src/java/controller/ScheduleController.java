@@ -39,7 +39,8 @@ public class ScheduleController implements Serializable {
         currentEvent = new DefaultScheduleEvent();
     }
     
-    public void addEvent() {  
+    public String addEvent() {  
+        System.out.println("aa");
         if(currentEvent.getId() == null) {
             eventModel.addEvent(currentEvent);  
         }
@@ -47,6 +48,7 @@ public class ScheduleController implements Serializable {
             eventModel.updateEvent(currentEvent);  
         }
         currentEvent = new DefaultScheduleEvent();
+        return null;
     }
     
     public void deleteEvent() {
@@ -61,5 +63,23 @@ public class ScheduleController implements Serializable {
         // selected an empty event, populate with defaults.
         currentEvent = new DefaultScheduleEvent("", selectEvent.getDate(), selectEvent.getDate());  
     }
+
+    public ScheduleModel getEventModel() {
+        return eventModel;
+    }
+
+    public void setEventModel(ScheduleModel eventModel) {
+        this.eventModel = eventModel;
+    }
+
+    public ScheduleEvent getCurrentEvent() {
+        return currentEvent;
+    }
+
+    public void setCurrentEvent(ScheduleEvent currentEvent) {
+        this.currentEvent = currentEvent;
+    }
+    
+    
     
 }
