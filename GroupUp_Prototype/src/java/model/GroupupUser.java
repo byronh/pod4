@@ -5,6 +5,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.persistence.Basic;
@@ -67,7 +68,7 @@ public class GroupupUser implements Serializable {
     
     @ElementCollection
     @CollectionTable(name = "LOGIN_GROUPS",
-            joinColumns = @JoinColumn(name = "email", nullable=false),
+            joinColumns = @JoinColumn(name = "email", referencedColumnName="email", nullable=false),
             uniqueConstraints = { @UniqueConstraint(columnNames={"email","groupname"}) } )
     @Column(nullable=false, name="groupname", length=64)
     @Enumerated(EnumType.STRING)
@@ -83,10 +84,8 @@ public class GroupupUser implements Serializable {
     private Collection<GroupupGroup> groupupGroupCollection;
 
     public GroupupUser() {
-    }
-
-    public GroupupUser(Integer id) {
-        this.id = id;
+        groups = new ArrayList<LoginGroup>();
+        groups.add(LoginGroup.USER);
     }
 
     public Integer getId() {
