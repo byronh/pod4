@@ -23,7 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
-import model.User;
+import javax.validation.ConstraintViolation;
+import model.GroupupUser;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -48,12 +49,12 @@ public class LoginController implements Serializable {
     private String lastName;
     private String confirmPassword;
     
-    public List<User> findAll() {
-        return em.createQuery("select o from LOGIN_USER").getResultList();
+    public List<GroupupUser> findAll() {
+        return em.createQuery("select o from groupup_user").getResultList();
     }
     
-    public User findFromEmail(String email) {
-        return em.find(User.class, email);
+    public GroupupUser findFromEmail(String email) {
+        return em.find(GroupupUser.class, email);
     }
 
     public String getEmail() {
@@ -101,11 +102,11 @@ public class LoginController implements Serializable {
         try {
             utx.begin();
             
-            User newUser = new User();
+            GroupupUser newUser = new GroupupUser();
             
             newUser.setEmail(email);
-            newUser.setFirstName(firstName);
-            newUser.setLastName(lastName);
+            newUser.setFname(firstName);
+            newUser.setLname(lastName);
             
             // Does a sha256 hash and base64 encodes passwords for now
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -117,12 +118,17 @@ public class LoginController implements Serializable {
             utx.commit();
             // return string of next webpage
             return null;
+            
         } catch (RollbackException e) {
+            context.addMessage(null, new FacesMessage(e.getMessage()));
+            System.out.println(e.getStackTrace().toString());
             context.addMessage(null, new FacesMessage("Transaction error in creating new account (Username may be taken)"));
             return null;
         
         } catch (Exception e) {
             // copy pasted this stuff, do sth about it later
+            System.out.println(e.getStackTrace().toString());
+            context.addMessage(null, new FacesMessage(e.getMessage()));
             context.addMessage(null, new FacesMessage("Unexpected Error in creating new account"));
             return null;
         }

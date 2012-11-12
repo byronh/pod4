@@ -16,7 +16,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import model.User;
+import model.GroupupUser;
 import org.primefaces.event.TransferEvent;
 
 import org.primefaces.model.DualListModel;
@@ -26,32 +26,32 @@ import org.primefaces.model.DualListModel;
 
 public class ExampleOfEditGroupPickListControllerBean {
 
-	private DualListModel<User> players;
+	private DualListModel<GroupupUser> players;
 	
 	private DualListModel<String> cities;
 
 	public ExampleOfEditGroupPickListControllerBean() {
 		//Players
-		List<User> source = new ArrayList<User>();
-		List<User> target = new ArrayList<User>();
+		List<GroupupUser> source = new ArrayList<GroupupUser>();
+		List<GroupupUser> target = new ArrayList<GroupupUser>();
 		
-                User user = new User();
-                user.setFirstName("Shuyi");
+                GroupupUser user = new GroupupUser();
+                user.setFname("Shuyi");
 		source.add(user);
-                user = new User();
-                user.setFirstName("Mark");
+                user = new GroupupUser();
+                user.setFname("Mark");
 		source.add(user);
-		user = new User();
-                user.setFirstName("Crystal");
+		user = new GroupupUser();
+                user.setFname("Crystal");
 		source.add(user);
-		user = new User();
-                user.setFirstName("Geram");
+		user = new GroupupUser();
+                user.setFname("Geram");
 		source.add(user);
-		user = new User();
-                user.setFirstName("Leopard");
+		user = new GroupupUser();
+                user.setFname("Leopard");
 		source.add(user);
 		
-		players = new DualListModel<User>(source, target);
+		players = new DualListModel<GroupupUser>(source, target);
 		
 		//Cities
 		List<String> citiesSource = new ArrayList<String>();
@@ -66,10 +66,10 @@ public class ExampleOfEditGroupPickListControllerBean {
 		cities = new DualListModel<String>(citiesSource, citiesTarget);
 	}
 	
-	public DualListModel<User> getPlayers() {
+	public DualListModel<GroupupUser> getPlayers() {
 		return players;
 	}
-	public void setPlayers(DualListModel<User> players) {
+	public void setPlayers(DualListModel<GroupupUser> players) {
 		this.players = players;
 	}
 	
@@ -83,7 +83,7 @@ public class ExampleOfEditGroupPickListControllerBean {
     public void onTransfer(TransferEvent event) {
         StringBuilder builder = new StringBuilder();
         for(Object item : event.getItems()) {
-            builder.append(((User) item).getEmail()).append("<br />");
+            builder.append(((GroupupUser) item).getEmail()).append("<br />");
         }
         
         FacesMessage msg = new FacesMessage();

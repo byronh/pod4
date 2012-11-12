@@ -6,14 +6,22 @@ package model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,28 +44,41 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GroupupUser.findByPublic1", query = "SELECT g FROM GroupupUser g WHERE g.public1 = :public1")})
 public class GroupupUser implements Serializable {
     private static final long serialVersionUID = 1L;
+    
     @Id
-    @Basic(optional = false)
     @NotNull
+    @GeneratedValue
     @Column(name = "id")
     private Integer id;
-    @Size(max = 255)
-    @Column(name = "fname")
+    
+    @Column(name = "fname", nullable=false, length=128)
     private String fname;
-    @Size(max = 255)
-    @Column(name = "lname")
+    
+    @Column(name = "lname", nullable=false, length=128)
     private String lname;
+    
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 255)
-    @Column(name = "email")
+    @Column(name = "email", unique=true, nullable=false, length=128)
     private String email;
-    @Size(max = 255)
-    @Column(name = "password")
+    
+    //Sha256 Hash + Base64 encoding
+    @Column(name = "password", nullable=false, length=45)
     private String password;
-    @Column(name = "public")
+    
+    @ElementCollection
+    @CollectionTable(name = "LOGIN_GROUPS",
+            joinColumns = @JoinColumn(name = "email", nullable=false),
+            uniqueConstraints = { @UniqueConstraint(columnNames={"email","groupname"}) } )
+    @Column(nullable=false, name="groupname", length=64)
+    @Enumerated(EnumType.STRING)
+    private List<LoginGroup> groups;
+    
+    @Column(name = "public1")
     private Boolean public1;
+    
     @ManyToMany(mappedBy = "groupupUserCollection")
     private Collection<GroupupTimeslot> groupupTimeslotCollection;
+    
     @ManyToMany(mappedBy = "groupupUserCollection")
     private Collection<GroupupGroup> groupupGroupCollection;
 
@@ -70,6 +91,14 @@ public class GroupupUser implements Serializable {
 
     public Integer getId() {
         return id;
+    }
+
+    public List<LoginGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<LoginGroup> groups) {
+        this.groups = groups;
     }
 
     public void setId(Integer id) {

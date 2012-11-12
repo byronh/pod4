@@ -57,6 +57,9 @@ public class LoginFilter implements Filter {
             // We want to normally display when we are loading a resource or there is no user logged in
             System.out.println("  LoginFilter::doFilter - Resource");
             chain.doFilter(request, response);
+        } else if (currentURL.equals(httpRequest.getContextPath() + "/")) {
+            System.out.println("  LoginFilter::doFilter - Root, redirecting to login page");
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces/login.xhtml");
         } else if (httpRequest.getUserPrincipal() == null && currentURL.contains("facelets/")) {
             System.out.println("  LoginFilter::doFilter - Accessing restricted resources, redirecting (should never happen if glassfish is set-up properly");
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces/login.xhtml");
@@ -66,7 +69,7 @@ public class LoginFilter implements Filter {
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces/facelets/ScheduleView.xhtml");
             //httpRequest.getRequestDispatcher("/faces/facelets/ScheduleView.xhtml").forward(request, response);
         } else {
-            System.out.println("  LoginFilter::doFilter - Displaying normally");
+            System.out.println("  LoginFilter::doFilter - No match, Displaying normally");
             chain.doFilter(request, response);
         }
 }
