@@ -22,6 +22,7 @@ public class CreateGroupViewController {
 
     private List<GroupupUser> selectedUserList;
     private GroupupUser selectedUser;
+    private String groupName;
 
     public CreateGroupViewController() {
         selectedUserList = new ArrayList<GroupupUser>();
@@ -41,6 +42,14 @@ public class CreateGroupViewController {
 
     public void setSelectedUserList(List<GroupupUser> selectedUserList) {
         this.selectedUserList = selectedUserList;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public void addButtonActionListener() {
