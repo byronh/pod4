@@ -20,19 +20,23 @@ import model.GroupupUser;
 public class UserConverter implements Converter {
 
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {   GroupupUser user = new GroupupUser();   user.setFname("Shuyi"); return user;
-       /* if (value.trim().equals("")) {
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+        if (value.trim().equals("")) {
             return null;
         } else {
             try {
-                // find which player matches the value in database
+                for (GroupupUser p : SearchPeopleAutoComplete.userInDatabase) {
+                    if (p.getId() == Integer.parseInt(value)) {
+                        return p;
+                    }
+                }
 
             } catch (NumberFormatException exception) {
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid player"));
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid groupup user"));
             }
         }
 
-        return null;*/
+        return null;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class UserConverter implements Converter {
        if (value == null || value.equals("")) {
             return "";
         } else {
-            return String.valueOf(((GroupupUser) value).getFname());
+            return String.valueOf(((GroupupUser) value).getId());
         }
     }
     

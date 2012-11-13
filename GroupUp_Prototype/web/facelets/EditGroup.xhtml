@@ -14,7 +14,7 @@
             <h:form>
                 <h3>This is just a view. The controller still need to be completed by controller team so that data could be displayed here</h3>  
                 <p:pickList id="pojoPickList" value="#{pickListControllerOfEditGroup.players}" var="user" effect="bounce"  
-                            itemValue="#{user}" itemLabel="#{user.firstName}" converter="userConverter"  
+                            itemValue="#{user}" itemLabel="#{user.fname}" converter="userConverter"  
                             showSourceControls="true" showTargetControls="true"   
                             showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 
@@ -28,7 +28,7 @@
                     </p:column>  
 
                     <p:column style="width:75%;">  
-                        #{user.firstName}  
+                        #{user.fname}  
                     </p:column>  
 
                 </p:pickList>  
@@ -40,12 +40,12 @@
                     <h:panelGrid id="displayPlayers" columns="2">  
                         <h:outputText value="Source: " style="font-weight:bold"/>  
                         <ui:repeat value="#{pickListControllerOfEditGroup.players.source}" var="player">  
-                            <h:outputText value="#{player.firstName}" style="margin-right:5px" />  
+                            <h:outputText value="#{player.fname}" style="margin-right:5px" />  
                         </ui:repeat>  
 
                         <h:outputText value="Target: " style="font-weight:bold"/>  
                         <ui:repeat value="#{pickListControllerOfEditGroup.players.target}" var="player">  
-                            <h:outputText value="#{player.firstName}" style="margin-right:5px" />  
+                            <h:outputText value="#{player.fname}" style="margin-right:5px" />  
                         </ui:repeat>  
                     </h:panelGrid>  
                 </p:dialog>  
