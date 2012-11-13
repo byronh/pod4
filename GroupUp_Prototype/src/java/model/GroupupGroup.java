@@ -10,6 +10,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -37,18 +38,21 @@ import javax.xml.bind.annotation.XmlTransient;
 public class GroupupGroup implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
+    @GeneratedValue
     @NotNull
     @Column(name = "id")
     private Integer id;
+    
     @Size(max = 255)
     @Column(name = "name")
     private String name;
+    
     @JoinTable(name = "groupup_user_group", joinColumns = {
         @JoinColumn(name = "group_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "user_id", referencedColumnName = "id")})
     @ManyToMany
     private Collection<GroupupUser> groupupUserCollection;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupId")
     private Collection<GroupupTimeslot> groupupTimeslotCollection;
 

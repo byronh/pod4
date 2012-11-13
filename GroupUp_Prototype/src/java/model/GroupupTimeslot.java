@@ -10,6 +10,7 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -41,37 +42,43 @@ import javax.xml.bind.annotation.XmlTransient;
 public class GroupupTimeslot implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
+    @GeneratedValue
     @NotNull
     @Column(name = "id")
     private Integer id;
+    
+    @Column(name = "title")
+    private String title;
+    
     @Column(name = "reccurance")
     private Short reccurance;
+    
     @Column(name = "day_of_week")
     private Short dayOfWeek;
+    
     @Column(name = "start_time")
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
+    
     @Column(name = "end_time")
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date endTime;
+    
     @JoinTable(name = "groupup_user_timeslot", joinColumns = {
         @JoinColumn(name = "timeslot_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "user_id", referencedColumnName = "id")})
     @ManyToMany
     private Collection<GroupupUser> groupupUserCollection;
+    
     @JoinColumn(name = "group_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private GroupupGroup groupId;
+    
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private GroupupCourse courseId;
 
     public GroupupTimeslot() {
-    }
-
-    public GroupupTimeslot(Integer id) {
-        this.id = id;
     }
 
     public Integer getId() {
@@ -82,6 +89,14 @@ public class GroupupTimeslot implements Serializable {
         this.id = id;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
     public Short getReccurance() {
         return reccurance;
     }

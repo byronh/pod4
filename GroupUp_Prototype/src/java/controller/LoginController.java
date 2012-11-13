@@ -139,7 +139,7 @@ public class LoginController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-        String message = "";
+        String message;
         try {
             //Login
             request.login(email, password);
@@ -172,7 +172,7 @@ public class LoginController implements Serializable {
         if(session != null){
             session.invalidate();
         }
-        return "/faces/index.xhtml?faces-redirect=true";
+        return "/faces/login.xhtml?faces-redirect=true";
     }
     
     public LoginController() {

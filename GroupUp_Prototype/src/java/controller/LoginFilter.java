@@ -48,28 +48,41 @@ public class LoginFilter implements Filter {
             FilterChain chain)
             throws IOException, ServletException {
 
+        boolean printLog = false;
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String currentURL = httpRequest.getRequestURI().toString();
-        System.out.println("LoginFilter::doFilter - Accessing URL: " + currentURL);
+        if( printLog) {
+            System.out.println("LoginFilter::doFilter - Accessing URL: " + currentURL);
+        }
             
         if (currentURL.contains(ResourceHandler.RESOURCE_IDENTIFIER)) {
             // We want to normally display when we are loading a resource or there is no user logged in
-            System.out.println("  LoginFilter::doFilter - Resource");
+            if( printLog) {
+                System.out.println("  LoginFilter::doFilter - Resource");
+            }
             chain.doFilter(request, response);
         } else if (currentURL.equals(httpRequest.getContextPath() + "/")) {
-            System.out.println("  LoginFilter::doFilter - Root, redirecting to login page");
+            if (printLog) {
+                System.out.println("  LoginFilter::doFilter - Root, redirecting to login page");
+            }
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces/login.xhtml");
         } else if (httpRequest.getUserPrincipal() == null && currentURL.contains("facelets/")) {
-            System.out.println("  LoginFilter::doFilter - Accessing restricted resources, redirecting (should never happen if glassfish is set-up properly");
+            if (printLog) {
+                System.out.println("  LoginFilter::doFilter - Accessing restricted resources, redirecting (should never happen if glassfish is set-up properly");
+            }
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces/login.xhtml");
         } else if (httpRequest.getUserPrincipal() != null && currentURL.contains("login.xhtml")) {
             // Does redirecting on client side so the URL changes, instead of a server forward which doesn't change URL.
-            System.out.println("  LoginFilter::doFilter - Log in page + session exists: " + httpRequest.getSession().getId());
+            if(printLog) {
+                System.out.println("  LoginFilter::doFilter - Log in page + session exists: " + httpRequest.getSession().getId());
+            }
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces/facelets/ScheduleView.xhtml");
             //httpRequest.getRequestDispatcher("/faces/facelets/ScheduleView.xhtml").forward(request, response);
         } else {
-            System.out.println("  LoginFilter::doFilter - No match, Displaying normally");
+            if (printLog) {
+                System.out.println("  LoginFilter::doFilter - No match, Displaying normally");
+            }
             chain.doFilter(request, response);
         }
 }

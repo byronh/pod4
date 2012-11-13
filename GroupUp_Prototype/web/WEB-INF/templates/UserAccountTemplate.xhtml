@@ -10,6 +10,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <h:outputStylesheet library="css" name="account.css"/>
         <title>Group Up: Your Account</title>
+        <script>
+            // window onload hack taken from http://stackoverflow.com/questions/5522702/call-jsf-2-0-managebean-method-from-javascript-onload-event
+            window.onload = function() {
+                document.getElementById('hidden:link').onclick();
+            }
+        </script>
     </h:head>
 
     <h:body>
@@ -18,9 +24,11 @@
             <ui:insert name="top"></ui:insert>
             <div id="title">GroupUp</div>
             <div id="link_bar">
+                <h:form>
                 <h:link>About</h:link>  | 
                 <h:link>Help</h:link>  | 
-                <h:link>Sign Out</h:link>
+                <h:commandLink value="Sign Out" action="#{loginController.logout}" />
+                </h:form>
             </div>
             <p:separator id="topSeparator"/>    
         </div>
@@ -57,6 +65,11 @@
             <ui:insert name="bottom">A Product of StudenTech Inc. All Rights Reserved 2012.</ui:insert>
         </div>
 
+        <h:form id="hidden" style="display:none">
+            <h:commandLink id="link">
+                <f:ajax event="click" listener="#{scheduleController.loadSchedule}"/>
+            </h:commandLink>
+        </h:form>
     </h:body>
 
 </html>

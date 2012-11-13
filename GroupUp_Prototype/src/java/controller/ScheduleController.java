@@ -7,7 +7,27 @@ package controller;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import javax.annotation.Resource;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.RollbackException;
+import javax.transaction.UserTransaction;
+import model.GroupupTimeslot;
+import model.GroupupUser;
+import org.apache.commons.codec.binary.Base64;
 import org.primefaces.event.DateSelectEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.ScheduleEntrySelectEvent;
@@ -25,34 +45,122 @@ import org.primefaces.model.ScheduleModel;
 @SessionScoped
 public class ScheduleController implements Serializable {
 
+    // Used for database access
+    @PersistenceContext()
+    private EntityManager em;
+    
+    // Used for transaction management
+    @Resource
+    private UserTransaction utx;
+    
     // Schedule instance
     private ScheduleModel eventModel;
     
     // For every new activity created, the form submitted parameters fill this in
     private ScheduleEvent currentEvent;
     
+    private HashMap<String, Integer> scheduleToDbIdMap;
+    
+    private boolean loadedSchedule;
+    
     /**
      * Creates a new instance of ScheduleController
      */
     public ScheduleController() {
+        System.out.println("Initialized duppesm");
         eventModel = new DefaultScheduleModel();
         currentEvent = new DefaultScheduleEvent();
+        scheduleToDbIdMap = new HashMap<String, Integer>();
+        loadedSchedule = false;
+    }
+ 
+    public GroupupUser getUser() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        Principal principal = request.getUserPrincipal();
+        String userEmail = principal.getName();
+        
+        // Find user using email address given from principal
+        Query query = em.createNamedQuery("GroupupUser.findByEmail");
+        query.setParameter("email", userEmail);
+        Collection<GroupupUser> users = query.getResultList();
+        
+        if (users.size() != 1) {
+            System.out.println("loadSchedule: Severe Error! No user logged in and we shouldn't be here!");
+            return null;
+        }
+        
+        return users.iterator().next();
     }
     
-    public String addEvent() {  
-        System.out.println("aa");
+    public void addEvent(ActionEvent actionEvent) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        
+        // error check
+        if (currentEvent.getStartDate().after(currentEvent.getEndDate())) {
+            System.out.println("Error: Start date must be before End date!");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error: Start date must be before End date!"));
+            return;
+        }
         if(currentEvent.getId() == null) {
             eventModel.addEvent(currentEvent);  
         }
         else  {
             eventModel.updateEvent(currentEvent);  
         }
+        
+        
+        GroupupUser user = getUser();
+        Integer dbId = scheduleToDbIdMap.get(currentEvent.getId());
+        try {
+            if (dbId == null) {
+                utx.begin();
+            
+                GroupupTimeslot newSlot = new GroupupTimeslot();
+                Collection<GroupupUser> users = new ArrayList<GroupupUser>();
+                users.add(user);
+                newSlot.setGroupupUserCollection(users);
+                newSlot.setStartTime(currentEvent.getStartDate());
+                newSlot.setEndTime(currentEvent.getEndDate());
+                newSlot.setTitle(currentEvent.getTitle());
+                user.getGroupupTimeslotCollection().add(newSlot);
+                em.merge(user);
+                em.persist(newSlot);
+                utx.commit();
+                
+                scheduleToDbIdMap.put(currentEvent.getId(), newSlot.getId());
+                
+            } else {
+                utx.begin();
+                // retrieve existing timeslot from DB and update
+                Query query = em.createNamedQuery("GroupupTimeslot.findById");
+                query.setParameter("id", dbId);
+                Collection<GroupupTimeslot> slots = query.getResultList();
+                
+                if (slots.size() != 1) {
+                    System.out.println("error in # of corresponding events: " + slots.size());
+                } else {
+                    GroupupTimeslot slot = slots.iterator().next();
+                    slot.setStartTime(currentEvent.getStartDate());
+                    slot.setEndTime(currentEvent.getEndDate());
+                    slot.setTitle(currentEvent.getTitle());
+                    em.merge(slot);
+                }
+                utx.commit();
+            }
+        } catch (RollbackException e) {
+            System.out.println(e.getStackTrace().toString());
+        } catch (Exception e) {
+            // copy pasted this stuff, do sth about it later
+            System.out.println(e.getStackTrace().toString());
+        }
         currentEvent = new DefaultScheduleEvent();
-        return null;
     }
     
     public void deleteEvent() {
+        
         eventModel.deleteEvent(currentEvent);
+
     }
     
     public void onEventSelect(ScheduleEntrySelectEvent selectEvent) {
@@ -80,6 +188,27 @@ public class ScheduleController implements Serializable {
         this.currentEvent = currentEvent;
     }
     
-    
-    
+    public void loadSchedule() {
+
+        if (!loadedSchedule) {
+            GroupupUser user = getUser();
+
+            // Get this user's timeslots
+            if (user == null ) {
+                System.out.println("Error loading user");
+            } else {
+                Iterator<GroupupTimeslot> timeslotIterator = user.getGroupupTimeslotCollection().iterator();
+
+
+                while(timeslotIterator.hasNext()) {
+                    GroupupTimeslot timeSlot = timeslotIterator.next();
+                    System.out.println("Populating event: " + timeSlot.getTitle() + ", from: " + timeSlot.getStartTime() + ", to: " + timeSlot.getEndTime());
+                    ScheduleEvent event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime());
+                    eventModel.addEvent(event);
+                    scheduleToDbIdMap.put(event.getId(), timeSlot.getId());
+                }
+                loadedSchedule = true;
+            }
+        }
+    }
 }
