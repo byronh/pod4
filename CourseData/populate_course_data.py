@@ -2,7 +2,7 @@
 #
 # How to use:
 # sudo apt-get install python-mysqldb
-# python2.7 populate_course_data.py
+# python populate_course_data.py
 
 import csv
 import MySQLdb
