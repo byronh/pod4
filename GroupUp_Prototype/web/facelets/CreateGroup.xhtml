@@ -22,8 +22,20 @@
                         <h:panelGrid id="groupInfo_title">NEW GROUP</h:panelGrid>
                         <h:form>
                             <h:outputText value="Group Name"    />
-                            <h:inputText styleClass="field" value="#{createGroupViewController.groupName}" title="groupName" id="groupName"></h:inputText>
+                            <h:inputText styleClass="field" value="#{groupScheduleController.groupName}" title="groupName" id="groupName"></h:inputText>
+                            <p:commandButton value="Create Group" action="#{groupScheduleController.createGroup}"/>  
+                        </h:form>
+                        </div>
 
+                </p:panel>  
+
+
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+                        <!--
 
                             <h:panelGrid columns="4" cellpaddindisplayLocationg="5">
                                 <h:outputLabel for="name" value="Name:" style="font-weight:bold"/>
@@ -77,3 +89,4 @@
     </h:body>
 </html>
 
+-->

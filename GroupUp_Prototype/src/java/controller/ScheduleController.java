@@ -63,17 +63,6 @@ public class ScheduleController implements Serializable {
     
     private boolean loadedSchedule;
     
-    /**
-     * Creates a new instance of ScheduleController
-     */
-    public ScheduleController() {
-        System.out.println("Initialized duppesm");
-        eventModel = new DefaultScheduleModel();
-        currentEvent = new DefaultScheduleEvent();
-        scheduleToDbIdMap = new HashMap<String, Integer>();
-        loadedSchedule = false;
-    }
- 
     public GroupupUser getUser() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -86,11 +75,22 @@ public class ScheduleController implements Serializable {
         Collection<GroupupUser> users = query.getResultList();
         
         if (users.size() != 1) {
-            System.out.println("loadSchedule: Severe Error! No user logged in and we shouldn't be here!");
+            System.out.println("getUser: Error! No user is registered for session!! session: " + userEmail);
             return null;
         }
         
         return users.iterator().next();
+    }
+        
+    /**
+     * Creates a new instance of ScheduleController
+     */
+    public ScheduleController() {
+        eventModel = new DefaultScheduleModel();
+        currentEvent = new DefaultScheduleEvent();
+        scheduleToDbIdMap = new HashMap<String, Integer>();
+        loadedSchedule = false;
+        System.out.println("Initialized ScheduleController");
     }
     
     public void addEvent(ActionEvent actionEvent) {
@@ -195,7 +195,7 @@ public class ScheduleController implements Serializable {
 
             // Get this user's timeslots
             if (user == null ) {
-                System.out.println("Error loading user");
+                System.out.println("Error loading user schedule");
             } else {
                 Iterator<GroupupTimeslot> timeslotIterator = user.getGroupupTimeslotCollection().iterator();
 
@@ -208,6 +208,7 @@ public class ScheduleController implements Serializable {
                     scheduleToDbIdMap.put(event.getId(), timeSlot.getId());
                 }
                 loadedSchedule = true;
+                System.out.println("loaded schedule for user: " + user.getEmail());
             }
         }
     }

@@ -65,6 +65,7 @@
             <ui:insert name="bottom">A Product of StudenTech Inc. All Rights Reserved 2012.</ui:insert>
         </div>
 
+        <!-- Called onload to load user schedule from db -->
         <h:form id="hidden" style="display:none">
             <h:commandLink id="link">
                 <f:ajax event="click" listener="#{scheduleController.loadSchedule}"/>

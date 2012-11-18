@@ -24,7 +24,7 @@ and open the template in the editor.
                 <p:panel id="contentPanel" header="Schedule View" >  
                     <h:form id="scheduleForm" style="width: 55%">  
                     
-                            <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule">  
+                        <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule" draggable="false" resizable="false">  
 
                                 <p:ajax event="dateSelect" listener="#{scheduleController.onDateSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
                                 <p:ajax event="eventSelect" listener="#{scheduleController.onEventSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
@@ -35,26 +35,21 @@ and open the template in the editor.
 
                             <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">  
                             
-                                <h:panelGrid id="eventDetails" columns="2">  
-                                    <h:outputLabel for="title" value="Title:" />  
-                                    <p:inputText id="title" value="" required="true"/>  
+                            <h:panelGrid id="eventDetails" columns="2">  
+                                <h:outputLabel for="title" value="Title:" />  
+                                <h:outputLabel id="title" value="#{scheduleController.currentEvent.title}"  required="true"/>  
 
-                                    <h:outputLabel for="from" value="From:" />  
-                                    <p:inputMask id="from" value="" mask="99/99/9999">  
-                                        <f:convertDateTime pattern="dd/MM/yyyy" />  
-                                    </p:inputMask>  
+                                <h:outputLabel for="from" value="From:" /> 
+                                <h:outputLabel id ="from" value="#{scheduleController.currentEvent.startDate}" pattern="MM/dd/yyyy HH:mm" />
 
-                                    <h:outputLabel for="to" value="To:" />  
-                                    <p:inputMask id="to" value="" mask="99/99/9999">  
-                                        <f:convertDateTime pattern="dd/MM/yyyy" />  
-                                    </p:inputMask>  
+                                <h:outputLabel for="to" value="To:" />  
+                                <h:outputLabel id="to" value="#{scheduleController.currentEvent.endDate}" pattern="MM/dd/yyyy HH:mm" />
 
-                                    <h:outputLabel for="allDay" value="All Day:" />  
-                                    <h:selectBooleanCheckbox id="allDay" value="" />  
+                                <h:outputLabel for="allDay" value="All Day:" />  
+                                <h:selectBooleanCheckbox readonly="true" id="allDay" value="#{scheduleController.currentEvent.allDay}" />  
 
-                                    <p:commandButton type="reset" vaxlue="Reset" />  
-                                    <p:commandButton value="Save"  oncomplete="myschedule.update();eventDialog.hide();"/>  
-                                </h:panelGrid>  
+                                <p:commandButton value="Ok" oncomplete="eventDialog.hide();"/>  
+                            </h:panelGrid>  
                             </p:dialog>  
 
 
