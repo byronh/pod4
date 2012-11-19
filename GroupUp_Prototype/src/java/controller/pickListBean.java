@@ -7,6 +7,10 @@ package controller;
 /**
  *
  * @author crysng
+ * 
+ * A test controller file containing dummy group/user data for groupEvent and
+ * createGroup views. Autocomplete methods are also here.
+ * 
  */
 
 import java.util.ArrayList;  
@@ -24,55 +28,59 @@ import org.primefaces.event.SelectEvent;
 @Named(value = "pickListBean")
 public class pickListBean {  
   
-    private DualListModel<GroupupUser> players;  
+    private DualListModel<GroupupGroup> groups;  
     private GroupupUser selectedUser;
     
     //autocomplete user list
     private List<GroupupUser> users;
+    
+    //group list
   
     public pickListBean() {  
-        //Players  
-        List<GroupupUser> source = new ArrayList<GroupupUser>();  
-        List<GroupupUser> target = new ArrayList<GroupupUser>();  
+        //Users  
+        List<GroupupGroup> source = new ArrayList<GroupupGroup>();  
+        List<GroupupGroup> target = new ArrayList<GroupupGroup>();  
         
-        GroupupUser a=new GroupupUser();
-        GroupupUser b=new GroupupUser();
-        GroupupUser c=new GroupupUser();
-        GroupupUser d=new GroupupUser();
-        a.setFname("Crystal");
-        b.setFname("Shuyi");
-        c.setFname("Geran");
-        d.setFname("Mark");
+        GroupupGroup a=new GroupupGroup();
+        GroupupGroup b=new GroupupGroup();
+        GroupupGroup c=new GroupupGroup();
+        GroupupGroup d=new GroupupGroup();
+        a.setName("Crystal's Grup");
+        b.setName("Shuyi's Group");
+        c.setName("Geran's Grup");
+        d.setName("Mark's Group");
         
         source.add(a);  
         source.add(b);  
-        target.add(c);  
-        target.add(d);  
+        source.add(c);  
+        source.add(d);  
     
           
-        players = new DualListModel<GroupupUser>(source, target);  
+        groups = new DualListModel<GroupupGroup>(source, target);  
         
         GroupupUser e=new GroupupUser();
         GroupupUser f=new GroupupUser();
         GroupupUser g=new GroupupUser();
         GroupupUser h=new GroupupUser();
-        e.setFname("Byron- AutoComplete1");
-        f.setFname("Mina- AutoComplete1");
-        g.setFname("Leonard- AutoComplete1");
-        h.setFname("Joel- AutoComplete1");
+        e.setFname("Byron- AutoComplete");
+        f.setFname("Mina- AutoComplete");
+        g.setFname("Leonard- AutoComplete");
+        h.setFname("Joel- AutoComplete");
         
         users = new ArrayList<GroupupUser>(); 
         users.add(e);  
         users.add(f);  
         users.add(g);  
         users.add(h); 
+        
+
     }  
       
-    public DualListModel<GroupupUser> getPlayers() {  
-        return players;  
+    public DualListModel<GroupupGroup> getGroups() {  
+        return groups;  
     }  
-    public void setPlayers(DualListModel<GroupupUser> players) {  
-        this.players = players;  
+    public void setGroups(DualListModel<GroupupGroup> groups) {  
+        this.groups = groups;  
     }  
       
     public void onTransfer(TransferEvent event) {  
