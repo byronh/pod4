@@ -19,8 +19,16 @@
             <to-view-id>facelets/ScheduleEdit.xhtml</to-view-id> 
         </navigation-case>
         <navigation-case>
-            <from-outcome>Create Group</from-outcome>
+            <from-outcome>Group Create</from-outcome>
             <to-view-id>facelets/CreateGroup.xhtml</to-view-id> 
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>Group Edit</from-outcome>
+            <to-view-id>facelets/EditGroup.xhtml</to-view-id> 
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>Group Event</from-outcome>
+            <to-view-id>facelets/GroupEvent.xhtml</to-view-id> 
         </navigation-case>
         <navigation-case>
             <from-outcome>Search People</from-outcome>
