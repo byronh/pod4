@@ -1,0 +1,52 @@
+/* 
+    Document   : eventColor
+    Created on : Nov 13, 2012, 4:27:31 PM
+    Author     : crysng
+    Description:
+        For color coding schedule events for individual group members.
+*/
+
+.user1 .fc-event-skin {
+    background: red;
+}
+.user2 .fc-event-skin {
+   background: green;
+ }
+ 
+ .user3 .fc-event-skin {
+    background: yellow;
+}
+.user4 .fc-event-skin {
+   background: orange;
+ }
+ .user5 .fc-event-skin {
+    background: orangered;
+}
+.user6 .fc-event-skin {
+   background: blue;
+ }
+ .user7 .fc-event-skin {
+    background: blueviolet;
+}
+.user8 .fc-event-skin {
+   background: greenyellow;
+ }
+ .user9 .fc-event-skin {
+    background: purple;
+}
+.user10 .fc-event-skin {
+   background: palegreen;
+ }
+ .user11 .fc-event-skin {
+    background: plum;
+}
+.user12 .fc-event-skin {
+   background: paleturquoise;
+ }
+ 
+.user13 .fc-event-skin {
+    background: peru;
+}
+.user14 .fc-event-skin {
+   background: palevioletred;
+ }
