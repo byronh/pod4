@@ -62,8 +62,6 @@ public class GroupScheduleController implements Serializable {
      * Creates a new instance of GroupScheduleController
      */
     public GroupScheduleController() {
-        
-        loadUsers();
     }
 
     public GroupupUser getUser() {
@@ -203,6 +201,7 @@ public class GroupScheduleController implements Serializable {
     }
     
     public void loadValues() {
+        loadUsers();
         loadGroupList();   
     }
     
@@ -235,7 +234,15 @@ public class GroupScheduleController implements Serializable {
     
     public void loadUsers() {
         Query query = em.createNamedQuery("GroupupUser.findAll");
+        System.out.println("loading users");
+
         searchUsers = query.getResultList();
+        if (searchUsers == null) {
+            System.out.println("NULL");
+        }
+        for ( GroupupUser user : searchUsers) {
+            System.out.println(user.getFname());
+        }
     }
     
     public List<GroupupUser> searchUsers(String query) {
