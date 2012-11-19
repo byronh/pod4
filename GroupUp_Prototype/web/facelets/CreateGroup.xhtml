@@ -14,6 +14,8 @@
  *
  * Clicking "Create Group" or "cancel" buttons on this page redirects site
  * back to GroupEvent page.
+ *
+ * To add users to group, type email/name in the autocomplete box, select multiple users are allowed
  * -->
     <h:head>
         <title>Facelet Title</title>
@@ -25,43 +27,37 @@
 
 
             <ui:define name="content">
+                <p:growl id="messages"/>  
 
                 <p:panel id="contentPanel" header="Create Group" >  
 
                     <div id="groupInfo">
                         <h:form>
-                            <h:outputText value="Group Name"    />
+                            <h:outputText value="Group Name: "    />
                             <h:inputText styleClass="field" value="#{groupScheduleController.groupName}" title="groupName" id="groupName"></h:inputText>
-                        
-                            <br/><br/>
-                            <h:outputLabel value="Search User" for="acUser" />
-                            <!--Auto complete for Search User field-->
-                            <p:autoComplete id="acUser"/>  
-                            
-                            <br/><br/>
-                            
-                            <!--userDetail panel only displays after a user is selected in the autocomplete-->
-                            <p:panel id="userDetail" header="User's Detail" style="width:30%; position: fixed; bottom: 30%;">
-                                <!--Display Selected User's name-->
-                                <h:outputLabel value="Name: "/>
-                                <br/><br/>
-                                <h:outputLabel value="Public Share: "/>
-                                <br/><br/>
-                                <p:button value="Add to Group" />  
-                            </p:panel>
+
                         </h:form>
                    </div>
+                   
+                    <div id="groupInfo">
+                        <h:form>
 
-                    <h:form id="displayForm" style="position:fixed; top:15%; right:5%;width: 40%">  
-                            <h3 style="margin-top:0">Current Member List: </h3>  
-                            <!--Display members added into this group HERE-->
-<!--                            <p:orderList value="#{pickListControllerOfEditGroup.players.target}" var="member" controlsLocation="none"  
-                                         itemLabel="#{member.fname}" itemValue="#{member}" iconOnly="true" id="basicList"/>-->
                             
-                            <!--clicking both buttons direct back to "Group Event" page-->
-                            <p:button value="Create Group" action="#{groupScheduleController.createGroup}" outcome="Group Event"/>  
-                            <p:button value="Cancel" outcome="Group Event"/>  
-                    </h:form> 
+                            <br/><br/><br/>
+                            <h:outputText value="Search and Add Members: "    />
+                            <p:autoComplete id="searchUser" value="#{pickListBean.selectedUser}"
+                                completeMethod="#{pickListBean.searchUsers}" var="user"
+                                itemLabel="#{user.fname}" itemValue="#{user.fname} #{user.lname}"
+                                converter="#{userConverter}"
+                                multiple="true">
+                            </p:autoComplete>
+                            <p:watermark for="searchUser" value="name/email" /> <!-- watermark for autoComplete -->
+                                     
+                            <p:button id="submitGroupB" value="Finish" outcome="Group Event"/>
+                            <p:button value="Cancel" outcome="Group Event"/> 
+
+                        </h:form>
+                    </div>
                 </p:panel>  
 
 
