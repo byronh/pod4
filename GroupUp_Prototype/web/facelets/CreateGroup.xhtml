@@ -50,6 +50,23 @@
                                 itemLabel="#{user.fname}" itemValue="#{user.fname} #{user.lname}"
                                 converter="#{userConverter}"
                                 multiple="true">
+                                
+                                <f:facet name="itemtip">  
+                                    <h:panelGrid  columns="2" cellpadding="5">  
+                                        <f:facet name="header">  
+                                             <p:graphicImage value="/resources/images/default.jpg" width="30" height="40" />  
+                                        </f:facet>  
+
+                                        <h:outputText value="Name: " />  
+                                        <h:outputText value="#{user.fname} #{user.lname}" />  
+
+                                        <h:outputText value="Email: " />  
+                                        <h:outputText value="#{user.email}" />  
+
+                                        <h:outputText value="Public Share: " />  
+                                        <h:outputText value="#{p.public1}"/>  
+                                    </h:panelGrid>  
+                                </f:facet>  
                             </p:autoComplete>
                             <p:watermark for="searchUser" value="name/email" /> <!-- watermark for autoComplete -->
                                      
