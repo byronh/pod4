@@ -62,10 +62,24 @@ public class pickListBean {
         GroupupUser f=new GroupupUser();
         GroupupUser g=new GroupupUser();
         GroupupUser h=new GroupupUser();
-        e.setFname("Byron- AutoComplete");
-        f.setFname("Mina- AutoComplete");
-        g.setFname("Leonard- AutoComplete");
-        h.setFname("Joel- AutoComplete");
+        GroupupUser i=new GroupupUser();
+        e.setFname("Byron");
+        f.setFname("Brian");
+        g.setFname("James");
+        h.setFname("Joel");
+        i.setFname("Jason");
+        
+        e.setLname("H");
+        f.setLname("A");
+        g.setLname("L");
+        h.setLname("C");
+        i.setLname("J");
+        
+        e.setEmail("email@email.com");
+        f.setEmail("email@email.com");
+        g.setEmail("email@email.com");
+        h.setEmail("e@email.com");
+        i.setEmail("z@email.com");
         
         users = new ArrayList<GroupupUser>(); 
         users.add(e);  
