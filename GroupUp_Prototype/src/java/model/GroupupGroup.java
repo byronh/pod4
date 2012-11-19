@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -35,7 +37,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GroupupGroup.findAll", query = "SELECT g FROM GroupupGroup g"),
     @NamedQuery(name = "GroupupGroup.findById", query = "SELECT g FROM GroupupGroup g WHERE g.id = :id"),
     @NamedQuery(name = "GroupupGroup.findByName", query = "SELECT g FROM GroupupGroup g WHERE g.name = :name")})
-public class GroupupGroup implements Serializable {
+@NamedNativeQueries({
+    @NamedNativeQuery(name = "GroupupGroup.findByUserId", query = "select groupup_group.* from groupup_user, groupup_user_group, groupup_group where groupup_user_group.user_id = groupup_user.id and groupup_user_group.group_id = groupup_group.id and groupup_user.id = :id")
+})
+    public class GroupupGroup implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue
@@ -52,6 +57,12 @@ public class GroupupGroup implements Serializable {
         @JoinColumn(name = "user_id", referencedColumnName = "id")})
     @ManyToMany
     private Collection<GroupupUser> groupupUserCollection;
+    
+    @JoinTable(name = "groupup_group_invites", joinColumns = {
+        @JoinColumn(name = "group_id", referencedColumnName = "id")}, inverseJoinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "id")})
+    @ManyToMany
+    private Collection<GroupupUser> groupupInviteCollection;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupId")
     private Collection<GroupupTimeslot> groupupTimeslotCollection;
@@ -97,6 +108,16 @@ public class GroupupGroup implements Serializable {
         this.groupupTimeslotCollection = groupupTimeslotCollection;
     }
 
+    @XmlTransient
+    public Collection<GroupupUser> getGroupupInviteCollection() {
+        return groupupInviteCollection;
+    }
+
+    public void setGroupupInviteCollection(Collection<GroupupUser> groupupInviteCollection) {
+        this.groupupInviteCollection = groupupInviteCollection;
+    }
+    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -115,6 +136,24 @@ public class GroupupGroup implements Serializable {
             return false;
         }
         return true;
+    }
+    
+    public boolean containsUser(GroupupUser user) {
+        if (this.groupupUserCollection.contains(user)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public void inviteUser(GroupupUser user) {
+        if (containsUser(user)) {
+            System.out.println("Trying to invite a user tha is already in this group: " + user);
+        } else {
+            if (!this.groupupInviteCollection.contains(user)) {
+                this.groupupInviteCollection.add(user);
+            }
+        }
     }
 
     @Override

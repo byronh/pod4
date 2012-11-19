@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -31,8 +32,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.primefaces.event.DateSelectEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.ScheduleEntrySelectEvent;
+import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.DualListModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
@@ -63,6 +66,7 @@ public class ScheduleController implements Serializable {
     
     private boolean loadedSchedule;
     
+    // Duplicate code in various managed bean classes to get the current logged in user
     public GroupupUser getUser() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -212,4 +216,8 @@ public class ScheduleController implements Serializable {
             }
         }
     }
+    
+    
+    
+    
 }

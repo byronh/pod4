@@ -4,7 +4,9 @@
  */
 package view;
 
+import controller.GroupScheduleController;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -18,14 +20,16 @@ import model.GroupupUser;
  */
 @FacesConverter(forClass=GroupupUser.class,value="userConverter")
 public class UserConverter implements Converter {
-
+    @ManagedProperty(value="#{GroupScheduleController}")
+    private GroupScheduleController groupScheduleController;
+    
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         if (value.trim().equals("")) {
             return null;
         } else {
             try {
-                for (GroupupUser p : SearchPeopleAutoComplete.userInDatabase) {
+                for (GroupupUser p : groupScheduleController.getSearchUsers()) {
                     if (p.getId() == Integer.parseInt(value)) {
                         return p;
                     }

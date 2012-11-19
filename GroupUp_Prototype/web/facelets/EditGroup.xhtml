@@ -7,13 +7,25 @@
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <title>Facelet Title</title>
+        <script>
+            // window onload hack taken from http://stackoverflow.com/questions/5522702/call-jsf-2-0-managebean-method-from-javascript-onload-event
+            window.onload = function() {
+                document.getElementById('hidden:link').onclick();
+            }
+        </script>
     </h:head>
     <h:body>
+        <!-- Called onload to load user schedule from db -->
+        <h:form id="hidden" style="display:none">
+            <h:commandLink id="link">
+                <f:ajax event="click" listener="#{groupScheduleController.loadValues}"/>
+            </h:commandLink>
+        </h:form>
         <div id="groupInfo">
             <h:panelGrid id="groupInfo_title">Change Group Member</h:panelGrid>
             <h:form>
                 <h3>This is just a view. The controller still need to be completed by controller team so that data could be displayed here</h3>  
-                <p:pickList id="pojoPickList" value="#{pickListControllerOfEditGroup.players}" var="user" effect="bounce"  
+                <p:pickList id="pojoPickList" value="#{groupScheduleController.groupMemberSelectList}" var="user" effect="bounce"  
                             itemValue="#{user}" itemLabel="#{user.fname}" converter="userConverter"  
                             showSourceControls="true" showTargetControls="true"   
                             showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
@@ -21,7 +33,7 @@
                     <f:facet name="sourceCaption">People outside the Group</f:facet>  
                     <f:facet name="targetCaption">People in the Group</f:facet>  
 
-                    <p:ajax event="transfer" listener="#{pickListControllerOfEditGroup.onTransfer}"  />  
+                    <p:ajax event="transfer" listener="#{groupScheduleController.onTransfer}"  />  
 
                     <p:column style="width:25%">  
                         <p:graphicImage value="/resources/images/default.jpg" width="30" height="40" />  
@@ -33,19 +45,21 @@
 
                 </p:pickList>  
 
-                <p:commandButton id="pojoSubmit" value="Submit" update="displayPlayers" oncomplete="playerDialog.show()" style="margin-top:5px"/>  
+                <p:commandButton id="pojoSubmit" value="Submit" actionListener="#{groupScheduleController.saveGroupMembers}" update="displayPlayers" oncomplete="playerDialog.show()" style="margin-top:5px"/>  
 
 
                 <p:dialog modal="true" showEffect="fade" hideEffect="fade" widgetVar="playerDialog">  
                     <h:panelGrid id="displayPlayers" columns="2">  
                         <h:outputText value="Source: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{pickListControllerOfEditGroup.players.source}" var="player">  
-                            <h:outputText value="#{player.fname}" style="margin-right:5px" />  
+                        <ui:repeat value="#{groupScheduleController.groupMemberSelectList.source}" var="player">  
+                            <h:outputText value="#{player.fname}" style="margin-right:5px" /> 
+                            <h:outputText value="#{player.lname}" style="margin-right:5px"/> 
                         </ui:repeat>  
 
                         <h:outputText value="Target: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{pickListControllerOfEditGroup.players.target}" var="player">  
+                        <ui:repeat value="#{groupScheduleController.groupMemberSelectList.target}" var="player">  
                             <h:outputText value="#{player.fname}" style="margin-right:5px" />  
+                            <h:outputText value="#{player.lname}" style="margin-right:5px"/> 
                         </ui:repeat>  
                     </h:panelGrid>  
                 </p:dialog>  
