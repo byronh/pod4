@@ -5,6 +5,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -72,6 +73,9 @@ import javax.xml.bind.annotation.XmlTransient;
     private Collection<GroupupTimeslot> groupupTimeslotCollection;
 
     public GroupupGroup() {
+        groupupUserCollection = new ArrayList<GroupupUser>();
+        groupupInviteCollection = new ArrayList<GroupupUser>();
+        groupupTimeslotCollection  = new ArrayList<GroupupTimeslot>();
     }
 
     public GroupupGroup(Integer id) {
@@ -150,14 +154,34 @@ import javax.xml.bind.annotation.XmlTransient;
         }
     }
     
+    public boolean invitedUser(GroupupUser user) {
+        if (this.groupupInviteCollection.contains(user)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     public void inviteUser(GroupupUser user) {
         if (containsUser(user)) {
             System.out.println("Trying to invite a user tha is already in this group: " + user);
         } else {
-            if (!this.groupupInviteCollection.contains(user)) {
+            if (!invitedUser(user)) {
                 this.groupupInviteCollection.add(user);
             }
         }
+    }
+    
+    public void addUser(GroupupUser user) {
+        if (containsUser(user)) {
+            return;
+        }
+        
+        if (this.groupupInviteCollection.contains(user)) {
+            this.groupupInviteCollection.remove(user);
+        }
+        
+        this.groupupUserCollection.add(user);
     }
 
     @Override

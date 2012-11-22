@@ -24,7 +24,7 @@ and open the template in the editor.
                        <h:form id="scheduleForm" style="width: 55%">  
         
             
-                            <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule" draggable="false">  
+                           <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule" draggable="false" view="agendaWeek" rightHeaderTemplate="" allDaySlot="false">  
 
                                 <p:ajax event="dateSelect" listener="#{scheduleController.onDateSelect}" update="eventDetails" onstart="eventDialog.show()" />  
                                 <p:ajax event="eventSelect" listener="#{scheduleController.onEventSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
@@ -61,8 +61,10 @@ and open the template in the editor.
                         
                         <h:form id="edit_right_form" style="position:fixed;  top:15%; right:15%;width:20%;">
                             <h:outputLabel value="Search UBC Course: "/>  
-                            <p:inputText id="searchTerm" required="true" label="Keyword" />  
-                            <p:watermark for="searchTerm" value="By name or ID" />  
+                            <p:autoComplete id="searchCourse" value="#{groupScheduleController.selectedUserList}"
+                                            completeMethod="#{groupScheduleController.completeUsers}" multiple="true">
+                                </p:autoComplete>
+                            <p:watermark for="searchCourse" value="By name or ID" />  
                            
                             <br/><br/><br/><br/>
                             <p:panel id="class_details" header="Course Details">

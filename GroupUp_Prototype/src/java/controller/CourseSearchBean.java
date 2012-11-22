@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.UserTransaction;
 import model.GroupupCourse;
 
 /**
@@ -23,8 +24,16 @@ public class CourseSearchBean {
     @PersistenceContext()
     private EntityManager em;
     
+    // Used for transaction management
+    @Resource
+    private UserTransaction utx;
+    
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+    
+    public void LoadCourses() {
+        
+    }
 
     public List<GroupupCourse> searchByDepartment(String department) {
         Query query = em.createNamedQuery("GroupupCourse.findByDept");
@@ -43,5 +52,7 @@ public class CourseSearchBean {
         query.setParameter("term", number);
         return query.getResultList();
     }
+    
+    
     
 }

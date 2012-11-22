@@ -156,32 +156,29 @@ public class GroupScheduleController implements Serializable {
             System.out.println("Error in string length!");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Group name must not be empty!"));
             return null;
-        }
-        
-        System.out.println(this.selectedUser);
-        
+        }       
         
         System.out.println("Attempting to create new group: " + groupName);
         try {
+            
             utx.begin();
+            // Create a new group and add the current user to the group
             GroupupGroup newGroup = new GroupupGroup();
             newGroup.setName(groupName);
-            Collection<GroupupUser> groupUsers = new ArrayList<GroupupUser>();
-            groupUsers.add(getUser());
+            GroupupUser currentUser = getUser();
+            newGroup.addUser(currentUser);
             
-            // email to user conversion
+            // Add other members into the invite list.
             for (String userString : selectedUserList ) {
                 
                 GroupupUser user = decodeUserString(userString);
                 if (user == null) {
                     System.out.println("Something wrong with user encoding, should not be here");
+                    return null;
                 }
-                if (!groupUsers.contains(user)) {
-                    groupUsers.add(user);
-                }
+                newGroup.inviteUser(user);
+                
             }
-            
-            newGroup.setGroupupUserCollection(groupUsers);
             
             em.persist(newGroup);
             utx.commit();
@@ -191,28 +188,6 @@ public class GroupScheduleController implements Serializable {
         }
         return "Group Event";
         
-    }
-    
-    // Code related to group membership
-    // Source is the side that is not in the group, shows up as autocomplete
-    List<GroupupUser> groupMemberSource = new ArrayList<GroupupUser>();
-    // Target belongs in the groups.
-    List<GroupupUser> groupMemberTarget = new ArrayList<GroupupUser>();
-
-    public List<GroupupUser> getGroupMemberSource() {
-        return groupMemberSource;
-    }
-
-    public void setGroupMemberSource(List<GroupupUser> groupMemberSource) {
-        this.groupMemberSource = groupMemberSource;
-    }
-
-    public List<GroupupUser> getGroupMemberTarget() {
-        return groupMemberTarget;
-    }
-
-    public void setGroupMemberTarget(List<GroupupUser> groupMemberTarget) {
-        this.groupMemberTarget = groupMemberTarget;
     }
     
     public void loadValues() {
@@ -237,25 +212,6 @@ public class GroupScheduleController implements Serializable {
             this.groupList.clear();
         }
         System.out.println("Loaded groups: " + this.groupList);
-    }
-    
-    public void loadMemberSelectList() {
-        groupMemberTarget = new ArrayList(this.group.getGroupupUserCollection());
-        groupMemberSource = new ArrayList();
-    }
-    
-    public void saveGroupMembers() {
-        for ( GroupupUser selectedUser : groupMemberTarget ) {
-            group.inviteUser(selectedUser);
-        }
-                 
-        try {
-            utx.begin();
-            em.merge(group);
-            utx.commit();
-        } catch (Exception e) {
-            System.out.println(e.getStackTrace().toString());
-        }
     }
     
     public void loadUsers() {
