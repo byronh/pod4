@@ -19,6 +19,12 @@
     </h:head>
 
     <h:body>
+        <!-- Called onload to load everything from db -->
+        <h:form id="hidden" style="display:none">
+            <h:commandLink id="link">
+                <f:ajax event="click" listener="#{loginController.loadFromDb}"/>
+            </h:commandLink>
+        </h:form>
 
         <div id="top" class="top">
             <ui:insert name="top"></ui:insert>
@@ -64,13 +70,6 @@
             
             <ui:insert name="bottom">A Product of StudenTech Inc. All Rights Reserved 2012.</ui:insert>
         </div>
-
-        <!-- Called onload to load user schedule from db -->
-        <h:form id="hidden" style="display:none">
-            <h:commandLink id="link">
-                <f:ajax event="click" listener="#{scheduleController.loadSchedule}"/>
-            </h:commandLink>
-        </h:form>
     </h:body>
 
 </html>

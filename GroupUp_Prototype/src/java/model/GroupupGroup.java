@@ -36,11 +36,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "GroupupGroup.findAll", query = "SELECT g FROM GroupupGroup g"),
     @NamedQuery(name = "GroupupGroup.findById", query = "SELECT g FROM GroupupGroup g WHERE g.id = :id"),
-    @NamedQuery(name = "GroupupGroup.findByName", query = "SELECT g FROM GroupupGroup g WHERE g.name = :name")})
-@NamedNativeQueries({
-    @NamedNativeQuery(name = "GroupupGroup.findByUserId", query = "select groupup_group.* from groupup_user, groupup_user_group, groupup_group where groupup_user_group.user_id = groupup_user.id and groupup_user_group.group_id = groupup_group.id and groupup_user.id = :id")
-})
+    @NamedQuery(name = "GroupupGroup.findByName", query = "SELECT g FROM GroupupGroup g WHERE g.name = :name")
+})    
     public class GroupupGroup implements Serializable {
+    /*
+     *       
+@NamedNativeQueries({
+    @NamedNativeQuery(name = "GroupupGroup.findByUserId", query = "select groupup_group.* from groupup_user, groupup_user_group, groupup_group where groupup_user_group.user_id = groupup_user.id and groupup_user_group.group_id = groupup_group.id ", resultClass = GroupupGroup.class)
+})
+     */
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue

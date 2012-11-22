@@ -35,22 +35,13 @@
                         <h:form>
                             <h:outputText value="Group Name: "    />
                             <h:inputText styleClass="field" value="#{groupScheduleController.groupName}" title="groupName" id="groupName"></h:inputText>
-
-                        </h:form>
-                   </div>
-                   
-                    <div id="groupInfo">
-                        <h:form>
-
                             
                             <br/><br/><br/>
                             <h:outputText value="Search and Add Members: "    />
-                            <p:autoComplete id="searchUser" value="#{pickListBean.selectedUser}"
-                                completeMethod="#{pickListBean.searchUsers}" var="user"
-                                itemLabel="#{user.fname}" itemValue="#{user.fname} #{user.lname}"
-                                converter="#{userConverter}"
-                                multiple="true">
-                                
+                            <p:autoComplete id="searchUser" value="#{groupScheduleController.selectedUserList}"
+                                            completeMethod="#{groupScheduleController.completeUsers}" multiple="true">
+                                </p:autoComplete>
+                            <!--
                                 <f:facet name="itemtip">  
                                     <h:panelGrid  columns="2" cellpadding="5">  
                                         <f:facet name="header">  
@@ -67,12 +58,29 @@
                                         <h:outputText value="#{p.public1}"/>  
                                     </h:panelGrid>  
                                 </f:facet>  
-                            </p:autoComplete>
-                            <p:watermark for="searchUser" value="name/email" /> <!-- watermark for autoComplete -->
+                            -->
+                            
+                            <!--<p:watermark for="searchUser" value="name/email" />  watermark for autoComplete -->
                                      
-                            <p:button id="submitGroupB" value="Finish" outcome="Group Event"/>
+                            <p:commandButton id="submitGroupB" type="submit" value="Finish" update="display" actionListener="#{groupScheduleController.createGroup}"/>
                             <p:button value="Cancel" outcome="Group Event"/> 
 
+                        <p:dialog modal="true" widgetVar="textDialog" showEffect="fade" width="200" resizable="false" header="Selected Values">  
+                            <p:outputPanel id="display">  
+                                <p:dataList value="#{groupScheduleController.selectedUserList}" var="user" id="users">  
+                                    <f:facet name="header">  
+                                        Users  
+                                    </f:facet>  
+                                    <h:outputText value="" id="user"/>  
+                                </p:dataList>  
+                            </p:outputPanel>  
+                        </p:dialog>  
+
+
+                        </h:form>
+                        <h:form>
+                           <h:commandButton value="Create" action="#{groupScheduleController.createGroup}" />
+                            
                         </h:form>
                     </div>
                 </p:panel>  

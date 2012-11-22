@@ -35,18 +35,23 @@ and open the template in the editor.
                     <br/><br/>
                 
                     <!--Following orderList displays current group list-->
-                    <p:orderList value="#{pickListBean.groups.source}" var="group" iconOnly="true" effect="clip"  
+                    <p:selectOneMenu value="#{groupScheduleController.group}" required="true">  
+                        <f:selectItem itemLabel="Select Group" itemValue="#{group.name}" />  
+                        <f:selectItems value="#{groupScheduleController.groupList}" var="group" itemLabel="#{group.name}" />  
+                    </p:selectOneMenu>  
+                    <!--
+                    <p:orderList value="#{groupScheduleController.groupList}" var="group" iconOnly="true" effect="clip"  
                                 itemValue="#{group.name}"  controlsLocation="none" id="groupList">  
                         <f:facet name="caption">Group List</f:facet>  
 
                         <p:column style="width:100%;">  
                             #{group.name}  
                         </p:column> 
-                    </p:orderList>  
+                    </p:orderList>  -->
 
                     <div id="selectedGroupButtons">
                         <p:commandButton id="diffScheduleB" value="Diff Schedules" style="font-size:12px"/>  
-                        <p:commandButton id="groupEditB" value="Edit Group" style="font-size:12px"/> 
+                        <p:commandButton id="groupEditB" type="submit" action="#{groupScheduleController.onEditGroupClick}" value="Edit Group" style="font-size:12px"/> 
                         <p:commandButton id="groupRemoveB" value="Remove Group" style="font-size:12px"/>
  
                         

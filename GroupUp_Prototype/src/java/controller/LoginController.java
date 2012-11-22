@@ -13,8 +13,10 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -44,6 +46,13 @@ public class LoginController implements Serializable {
     // Used for transaction management
     @Resource
     private UserTransaction utx;
+    
+    @Inject
+    private GroupScheduleController groupScheduleController;
+    
+    @Inject
+    private ScheduleController scheduleController;
+    
     
     private String email;
     private String password;
@@ -184,5 +193,11 @@ public class LoginController implements Serializable {
         if(session != null) {
             session.invalidate();
         }*/
+    }
+    
+    public void loadFromDb() {
+        scheduleController.loadSchedule();
+        groupScheduleController.loadValues();
+        
     }
 }
