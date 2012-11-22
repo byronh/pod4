@@ -19,27 +19,27 @@ and open the template in the editor.
             <ui:define name="content">
                                
                 <p:panel id="contentPanel" header="New Invites" >  
-                    <h3>You have 3 New Invites!!</h3> 
+                    <h3>You have 3 New Event Invites!!</h3> 
                     
-                            <p:accordionPanel>  
-        <p:tab title="Alex Rowe Invites You to Study">  
-            <h:panelGrid columns="2" cellpadding="10">  
-                <h:outputLabel value="Date: Nov 11, 2012"/>
-                               <br/>
-                <h:outputLabel value="Recurring: No"/>
-                                <br/>
-                <h:outputLabel value="Time: 12:00pm"/>
-                               <br/>
-                <h:outputLabel value="Location: ???"/>
-                                <br/>
-                <h:outputText  
-                    value="Message: Hi! Would you like to join our study group?" />  
-                <br/>
-                <p:button value="Accept" /> 
-                <p:button value="Decline" />
-                
-            </h:panelGrid>  
-        </p:tab>  
+                    <p:accordionPanel style="width:40%">  
+                            <p:tab title="Alex Rowe Invites You to Study">  
+                                <h:panelGrid columns="2" cellpadding="10">  
+                                    <h:outputLabel value="Date: Nov 11, 2012"/>
+                                                   <br/>
+                                    <h:outputLabel value="Recurring: No"/>
+                                                    <br/>
+                                    <h:outputLabel value="Time: 12:00pm"/>
+                                                   <br/>
+                                    <h:outputLabel value="Location: ???"/>
+                                                    <br/>
+                                    <h:outputText  
+                                        value="Message: Hi! Would you like to join our study group?" />  
+                                    <br/>
+                                    <p:button value="Accept" /> 
+                                    <p:button value="Decline" />
+
+                                </h:panelGrid>  
+                            </p:tab>  
         <p:tab title="Laura Khan Invites You to Project Meeting">  
                         <h:panelGrid columns="2" cellpadding="10">  
                 <h:outputLabel value="Date: Nov 13, 2012"/>
@@ -77,6 +77,32 @@ and open the template in the editor.
             </h:panelGrid> 
         </p:tab>  
     </p:accordionPanel>  
+                    
+    <h3 style="width:40%; position: absolute;top:8%; right:5%;">You have 1 New Group Invites!!</h3> 
+    <!--Please modify the values of the following accordionPanel
+    
+    EXAMPLE:
+    <p:accordionPanel value=”#{bean.list}” var=”listItem”>
+        <p:tab title="#{listItem.propertyA}">
+               <h:outputText value= "#{listItem.propertyB}"/>
+               ...More content
+        </p:tab>
+    </p:accordionPanel>  
+    
+    -->
+    
+    <p:accordionPanel style="width:40%; position: absolute;top:16%; right:5%;">
+        <p:tab title="You're invited to join ">
+               <h:outputLabel value="Group Owner: "/>
+               <h:outputLabel value="??? "/>
+               <br/><br/>
+               <h:outputLabel value="Group Members: "/>
+               <h:outputLabel value="??? "/>
+               <br/><br/>
+               <p:button value="Accept" /> 
+               <p:button value="Decline" />
+        </p:tab>
+    </p:accordionPanel> 
                         
                         
                 </p:panel>  
