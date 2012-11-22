@@ -70,6 +70,7 @@ public class GroupScheduleController implements Serializable {
     public GroupScheduleController() {
     }
 
+    // Gets the currently logged in user from session. duplicate code in various controllers for now..
     public GroupupUser getUser() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -295,6 +296,12 @@ public class GroupScheduleController implements Serializable {
             }
         }
         return suggestions;
+    }
+    
+    public String navigateToCreateGroup() {
+        this.groupName = "";
+        this.selectedUserList = new ArrayList();
+        return "Group Create";
     }
     
     public void onTransfer(TransferEvent event) {

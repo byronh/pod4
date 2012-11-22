@@ -28,10 +28,14 @@ and open the template in the editor.
                                
                 <p:panel id="contentPanel" header="Group Events" >  
                     
-                           <div id="groupInfo">
-            <h:form>
+                <div id="groupInfo">
+                <h:form>
+                     <p:commandButton id="newGroup" typ="submit" value="New Group" action="#{groupScheduleController.navigateToCreateGroup}" style="margin-top:5px"/>
+                </h:form>
+                               
+             <h:form>
                
-                    <p:button id="newGroup" value="New Group" outcome="Group Create" style="margin-top:5px"/> 
+                     
                     <br/><br/>
                 
                     <!--Following orderList displays current group list-->

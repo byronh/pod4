@@ -61,9 +61,9 @@
                             -->
                             
                             <!--<p:watermark for="searchUser" value="name/email" />  watermark for autoComplete -->
-                                     
-                            <p:commandButton id="submitGroupB" type="submit" value="Finish" update="display" actionListener="#{groupScheduleController.createGroup}"/>
-                            <p:button value="Cancel" outcome="Group Event"/> 
+                              
+                            <p:commandButton id="submitGroupB" type="submit" value="Finish" action="Group Event" actionListener="#{groupScheduleController.createGroup}"/>
+                        <p:button value="Cancel" outcome="Group Event"/> 
 
                         <p:dialog modal="true" widgetVar="textDialog" showEffect="fade" width="200" resizable="false" header="Selected Values">  
                             <p:outputPanel id="display">  
@@ -77,10 +77,6 @@
                         </p:dialog>  
 
 
-                        </h:form>
-                        <h:form>
-                           <h:commandButton value="Create" action="#{groupScheduleController.createGroup}" />
-                            
                         </h:form>
                     </div>
                 </p:panel>  
