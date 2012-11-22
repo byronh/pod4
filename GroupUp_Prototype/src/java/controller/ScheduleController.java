@@ -123,7 +123,7 @@ public class ScheduleController implements Serializable {
                 GroupupTimeslot newSlot = new GroupupTimeslot();
                 Collection<GroupupUser> users = new ArrayList<GroupupUser>();
                 users.add(user);
-                newSlot.setGroupupUserCollection(users);
+                newSlot.setTimeSlotCollection(users);
                 newSlot.setStartTime(currentEvent.getStartDate());
                 newSlot.setEndTime(currentEvent.getEndDate());
                 newSlot.setTitle(currentEvent.getTitle());

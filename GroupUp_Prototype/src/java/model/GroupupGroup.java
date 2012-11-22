@@ -71,6 +71,11 @@ import javax.xml.bind.annotation.XmlTransient;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupId")
     private Collection<GroupupTimeslot> groupupTimeslotCollection;
+    
+    // Don't know how to get user, will just hack it
+    private Integer ownerID;
+    private String ownerName;
+    
 
     public GroupupGroup() {
         groupupUserCollection = new ArrayList<GroupupUser>();
@@ -124,7 +129,22 @@ import javax.xml.bind.annotation.XmlTransient;
     public void setGroupupInviteCollection(Collection<GroupupUser> groupupInviteCollection) {
         this.groupupInviteCollection = groupupInviteCollection;
     }
-    
+
+    public Integer getOwnerID() {
+        return ownerID;
+    }
+
+    public void setOwnerID(Integer ownerID) {
+        this.ownerID = ownerID;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
 
     @Override
     public int hashCode() {
@@ -169,6 +189,16 @@ import javax.xml.bind.annotation.XmlTransient;
             if (!invitedUser(user)) {
                 this.groupupInviteCollection.add(user);
             }
+        }
+    }
+    
+    //remove user from group entirely (invite and group)
+    public void removeUser(GroupupUser user) {
+        if(containsUser(user)) {
+            this.groupupUserCollection.remove(user);
+        }
+        if(invitedUser(user)) {
+            this.groupupInviteCollection.remove(user);
         }
     }
     

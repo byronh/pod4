@@ -26,6 +26,7 @@ and open the template in the editor.
             
                            <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule" draggable="false" view="agendaWeek" rightHeaderTemplate="" allDaySlot="false">  
 
+
                                 <p:ajax event="dateSelect" listener="#{scheduleController.onDateSelect}" update="eventDetails" onstart="eventDialog.show()" />  
                                 <p:ajax event="eventSelect" listener="#{scheduleController.onEventSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
                                 <!--<p:ajax event="eventMove" listener="#{scheduleController.onEventMove}" update="messages" />-->  
@@ -38,7 +39,8 @@ and open the template in the editor.
                            
 
                             <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">  
-                            <h:panelGrid id="eventDetails" columns="2">  
+
+                                <h:panelGrid id="eventDetails" columns="2">  
                                 <h:outputLabel for="title" value="Title:" />  
                                 <p:inputText id="title" value="#{scheduleController.currentEvent.title}"  required="true"/>  
 
@@ -62,10 +64,8 @@ and open the template in the editor.
                         <h:form id="edit_right_form" style="position:fixed;  top:15%; right:15%;width:20%;">
                             <h:outputLabel value="Search UBC Course: "/>  
                             <p:autoComplete id="searchCourse" value="#{groupScheduleController.selectedUserList}"
-                                            completeMethod="#{groupScheduleController.completeUsers}" multiple="true">
-                                </p:autoComplete>
-                            <p:watermark for="searchCourse" value="By name or ID" />  
-                           
+                                            completeMethod="#{groupScheduleController.completeUsers}" multiple="true" />
+                                
                             <br/><br/><br/><br/>
                             <p:panel id="class_details" header="Course Details">
                                 <h:outputLabel value="Course: "/>

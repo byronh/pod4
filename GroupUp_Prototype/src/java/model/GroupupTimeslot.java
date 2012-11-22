@@ -68,7 +68,7 @@ public class GroupupTimeslot implements Serializable {
         @JoinColumn(name = "timeslot_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "user_id", referencedColumnName = "id")})
     @ManyToMany
-    private Collection<GroupupUser> groupupUserCollection;
+    private Collection<GroupupUser> timeSlotCollection;
     
     @JoinColumn(name = "group_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -78,6 +78,12 @@ public class GroupupTimeslot implements Serializable {
     @ManyToOne(optional = false)
     private GroupupCourse courseId;
 
+    @JoinTable(name = "groupup_user_timeslot_invites", joinColumns = {
+        @JoinColumn(name = "timeslot_id", referencedColumnName = "id")}, inverseJoinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "id")})
+    @ManyToMany
+    private Collection<GroupupUser> timeSlotInviteCollection;
+    
     public GroupupTimeslot() {
     }
 
@@ -129,14 +135,23 @@ public class GroupupTimeslot implements Serializable {
         this.endTime = endTime;
     }
 
-    @XmlTransient
-    public Collection<GroupupUser> getGroupupUserCollection() {
-        return groupupUserCollection;
+    public Collection<GroupupUser> getTimeSlotCollection() {
+        return timeSlotCollection;
     }
 
-    public void setGroupupUserCollection(Collection<GroupupUser> groupupUserCollection) {
-        this.groupupUserCollection = groupupUserCollection;
+    public void setTimeSlotCollection(Collection<GroupupUser> timeSlotCollection) {
+        this.timeSlotCollection = timeSlotCollection;
     }
+
+    public Collection<GroupupUser> getTimeSlotInviteCollection() {
+        return timeSlotInviteCollection;
+    }
+
+    public void setTimeSlotInviteCollection(Collection<GroupupUser> timeSlotInviteCollection) {
+        this.timeSlotInviteCollection = timeSlotInviteCollection;
+    }
+
+
 
     public GroupupGroup getGroupId() {
         return groupId;

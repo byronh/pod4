@@ -77,11 +77,25 @@ public class GroupupUser implements Serializable {
     @Column(name = "public1")
     private Boolean public1;
     
-    @ManyToMany(mappedBy = "groupupUserCollection")
+    @ManyToMany(mappedBy = "timeSlotCollection")
     private Collection<GroupupTimeslot> groupupTimeslotCollection;
+    
+    @ManyToMany(mappedBy = "timeSlotInviteCollection")
+    private Collection<GroupupTimeslot> groupupTimeslotInvites;
     
     @ManyToMany(mappedBy = "groupupUserCollection")
     private Collection<GroupupGroup> groupupGroupCollection;
+    
+    @ManyToMany(mappedBy = "groupupInviteCollection")
+    private Collection<GroupupGroup> groupupGroupInvites;
+
+    public Collection<GroupupTimeslot> getGroupupTimeslotInvites() {
+        return groupupTimeslotInvites;
+    }
+
+    public void setGroupupTimeslotInvites(Collection<GroupupTimeslot> groupupTimeslotInvites) {
+        this.groupupTimeslotInvites = groupupTimeslotInvites;
+    }
 
     public GroupupUser() {
         groups = new ArrayList<LoginGroup>();
@@ -160,6 +174,14 @@ public class GroupupUser implements Serializable {
 
     public void setGroupupGroupCollection(Collection<GroupupGroup> groupupGroupCollection) {
         this.groupupGroupCollection = groupupGroupCollection;
+    }
+
+    public Collection<GroupupGroup> getGroupupGroupInvites() {
+        return groupupGroupInvites;
+    }
+
+    public void setGroupupGroupInvites(Collection<GroupupGroup> groupupGroupInvites) {
+        this.groupupGroupInvites = groupupGroupInvites;
     }
 
     @Override

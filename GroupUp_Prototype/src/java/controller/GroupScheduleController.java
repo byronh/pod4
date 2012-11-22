@@ -11,6 +11,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -55,11 +56,15 @@ public class GroupScheduleController implements Serializable {
     // These variables are used for selection, and holds fields entered by the user
     private GroupupGroup group;
     private List<GroupupGroup> groupList = new ArrayList();
+    private List<GroupupGroup> groupInviteList = new ArrayList();
     
     // Used for group member movement
     private List<String> selectedUserList = new ArrayList();
     private GroupupUser selectedUser;
     private String groupName;
+    
+    // Used for group member invites
+    private Integer selectedGroupId;
     
     private List<GroupupUser> searchUsers;
     
@@ -89,6 +94,14 @@ public class GroupScheduleController implements Serializable {
         
         return users.iterator().next();
     }
+
+    public Integer getSelectedGroupId() {
+        return selectedGroupId;
+    }
+
+    public void setSelectedGroupId(Integer selectedGroupId) {
+        this.selectedGroupId = selectedGroupId;
+    }
     
     public GroupupGroup getGroup() {
         return group;
@@ -104,6 +117,14 @@ public class GroupScheduleController implements Serializable {
 
     public void setGroupList(List<GroupupGroup> groupList) {
         this.groupList = groupList;
+    }
+
+    public List<GroupupGroup> getGroupInviteList() {
+        return groupInviteList;
+    }
+
+    public void setGroupInviteList(List<GroupupGroup> groupInviteList) {
+        this.groupInviteList = groupInviteList;
     }
 
     public List<String> getSelectedUserList() {
@@ -150,6 +171,17 @@ public class GroupScheduleController implements Serializable {
         
     }
     
+    public String getGroupOwner(GroupupGroup group) {
+        GroupupUser owner = userSearchBean.findById(group.getOwnerID().toString());
+        if (owner == null)
+            return "";
+        return owner.getFname() + " " + owner.getLname();
+    }
+    
+    public String getGroupInviteMessage() {
+        return "You have " + this.groupInviteList.size() + " invites to groups: ";
+    }
+    
     public String createGroup() {
         System.out.println("Inside creategroup");
         if (groupName.length() == 0) {
@@ -167,6 +199,9 @@ public class GroupScheduleController implements Serializable {
             newGroup.setName(groupName);
             GroupupUser currentUser = getUser();
             newGroup.addUser(currentUser);
+            
+            newGroup.setOwnerID(currentUser.getId());
+            newGroup.setOwnerName(currentUser.getFname() + " " + currentUser.getLname());
             
             // Add other members into the invite list.
             for (String userString : selectedUserList ) {
@@ -199,7 +234,7 @@ public class GroupScheduleController implements Serializable {
         
         loadGroupList();   
         
-        
+        loadGroupInvites();
     }
     
     public void loadGroupList() {
@@ -212,6 +247,19 @@ public class GroupScheduleController implements Serializable {
             this.groupList.clear();
         }
         System.out.println("Loaded groups: " + this.groupList);
+    }
+    
+    public void loadGroupInvites() {
+        TypedQuery<GroupupGroup> query = em.createQuery("SELECT DISTINCT g FROM GroupupUser u LEFT JOIN u.groupupGroupInvites g WHERE u = :user", GroupupGroup.class);
+        GroupupUser currentUser = getUser();
+        query.setParameter("user", currentUser);
+        
+        this.groupInviteList = new ArrayList(query.getResultList());
+        if (this.groupInviteList.get(0) == null) {
+            this.groupInviteList.clear();
+        }
+        System.out.println("Loaded group invites: " + this.groupInviteList);
+        
     }
     
     public void loadUsers() {
@@ -228,6 +276,61 @@ public class GroupScheduleController implements Serializable {
         System.out.println("Done loading users.");
     }
     
+    public void acceptEventInvite() {
+        
+    }
+    
+    public void declineEventInvite() {
+        
+    }
+    
+    public void acceptInvite() {
+        Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        
+	String groupId = params.get("groupId");
+        System.out.println("Accepted invite for group id    : " + groupId);
+        for (GroupupGroup g : this.groupInviteList) {
+            if (g.getId().toString().equals(groupId)) {
+                GroupupUser user = getUser();
+                
+                g.addUser(user);
+                try {
+                    utx.begin();
+                    em.merge(g);
+                    utx.commit();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        // Inefficiently reload here to be sure
+        loadGroupList();
+        loadGroupInvites();
+    }
+    
+    public void declineInvite() {
+        Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        
+	String groupId = params.get("groupId");
+        System.out.println("Declined invite for group id    : " + groupId);
+        for (GroupupGroup g : this.groupInviteList) {
+            if (g.getId().toString().equals(groupId)) {
+                GroupupUser user = getUser();
+                
+                g.removeUser(user);
+                try {
+                    utx.begin();
+                    em.merge(g);
+                    utx.commit();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        // Inefficiently reload here to be sure
+        loadGroupList();
+        loadGroupInvites();
+    }
     public String encodeUserString(GroupupUser user) {
         String userEncode = user.getFname() + " <" + user.getEmail() + ">";
         return userEncode;

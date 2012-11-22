@@ -10,50 +10,46 @@
     </h:head>
     <h:body>
 
-        <div id="groupInfo">
-            <h:panelGrid id="groupInfo_title">Change Group Member</h:panelGrid>
-            <h:form>
-                <h3>This is just a view. The controller still need to be completed by controller team so that data could be displayed here</h3>  
-                <p:pickList id="pojoPickList" value="#{groupScheduleController.groupMemberSelectList}" var="user" effect="bounce"  
-                            itemValue="#{user}" itemLabel="#{user.fname}" converter="userConverter"  
-                            showSourceControls="true" showTargetControls="true"   
-                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
-
-                    <f:facet name="sourceCaption">People outside the Group</f:facet>  
-                    <f:facet name="targetCaption">People in the Group</f:facet>  
-
-                    <p:ajax event="transfer" listener="#{groupScheduleController.onTransfer}"  />  
-
-                    <p:column style="width:25%">  
-                        <p:graphicImage value="/resources/images/default.jpg" width="30" height="40" />  
-                    </p:column>  
-
-                    <p:column style="width:75%;">  
-                        #{user.fname}  
-                    </p:column>  
-
-                </p:pickList>  
-
-                <p:commandButton id="pojoSubmit" value="Submit" actionListener="#{groupScheduleController.saveGroupMembers}" update="displayPlayers" oncomplete="playerDialog.show()" style="margin-top:5px"/>  
+        <ui:composition template="../WEB-INF/templates/UserAccountTemplate.xhtml">
 
 
-                <p:dialog modal="true" showEffect="fade" hideEffect="fade" widgetVar="playerDialog">  
-                    <h:panelGrid id="displayPlayers" columns="2">  
-                        <h:outputText value="Source: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{groupScheduleController.groupMemberSelectList.source}" var="player">  
-                            <h:outputText value="#{player.fname}" style="margin-right:5px" /> 
-                            <h:outputText value="#{player.lname}" style="margin-right:5px"/> 
-                        </ui:repeat>  
+            <ui:define name="content">
 
-                        <h:outputText value="Target: " style="font-weight:bold"/>  
-                        <ui:repeat value="#{groupScheduleController.groupMemberSelectList.target}" var="player">  
-                            <h:outputText value="#{player.fname}" style="margin-right:5px" />  
-                            <h:outputText value="#{player.lname}" style="margin-right:5px"/> 
-                        </ui:repeat>  
-                    </h:panelGrid>  
-                </p:dialog>  
-            </h:form>
-        </div>
+                <p:panel id="contentPanel" header="Edit Group" >  
+
+                    <div id="groupInfo">
+                        <h:form>
+                            <h:outputText value="Group Name: "    />
+                            <h:outputText value="#{groupScheduleController.groupName}" id="groupName"></h:outputText>
+                            
+                            <br/><br/><br/>
+                            <h:outputText value="Search and Add Members: "    />
+                            <p:autoComplete id="searchUser" value="#{groupScheduleController.selectedUserList}"
+                                            completeMethod="#{groupScheduleController.completeUsers}" multiple="true">
+                                </p:autoComplete>
+                            
+                            <p:commandButton id="submitGroupB" type="submit" value="Save Changes" update="display" actionListener="#{groupScheduleController.createGroup}"/>
+                            <p:button value="Cancel" outcome="Group Event"/> 
+
+                        <p:dialog modal="true" widgetVar="textDialog" showEffect="fade" width="200" resizable="false" header="Selected Values">  
+                            <p:outputPanel id="display">  
+                                <p:dataList value="#{groupScheduleController.selectedUserList}" var="user" id="users">  
+                                    <f:facet name="header">  
+                                        Users  
+                                    </f:facet>  
+                                    <h:outputText value="" id="user"/>  
+                                </p:dataList>  
+                            </p:outputPanel>  
+                        </p:dialog>  
+
+
+                        </h:form>
+                    </div>
+                </p:panel>  
+
+
+            </ui:define>
+
+        </ui:composition>
     </h:body>
 </html>
-
