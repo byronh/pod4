@@ -62,8 +62,9 @@ and open the template in the editor.
                         <h:form id="edit_right_form" style="position:fixed;  top:15%; right:15%;width:20%;">
                             <h:outputLabel value="Search UBC Course: "/>  
                             <!--uncomment autocomplete after filling in the correct value, completeMethod and listener fields...-->
-<!--                            <p:autoComplete id="searchCourse" value="#{scheduleController.selectedCourseList}"
-                                            completeMethod="#{scheduleController.completeCourse}" listener="scheduleControler.handleSelect" update="class_details">
+<!--                        <p:autoComplete id="searchCourse" value="#{scheduleController.selectedCourseList}"
+                                            completeMethod="#{scheduleController.completeCourse}">
+                                    <p:ajax event="itemSelect" listener="scheduleController.handleSelect" update="class_details" />
                             </p:autoComplete>-->
                             
                             
