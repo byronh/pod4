@@ -61,9 +61,12 @@ and open the template in the editor.
                         
                         <h:form id="edit_right_form" style="position:fixed;  top:15%; right:15%;width:20%;">
                             <h:outputLabel value="Search UBC Course: "/>  
-                            <p:inputText id="searchTerm" required="true" label="Keyword" />  
-                            <p:watermark for="searchTerm" value="By name or ID" />  
-                           
+                            <!--uncomment autocomplete after filling in the correct value, completeMethod and listener fields...-->
+<!--                            <p:autoComplete id="searchCourse" value="#{scheduleController.selectedCourseList}"
+                                            completeMethod="#{scheduleController.completeCourse}" listener="scheduleControler.handleSelect" update="class_details">
+                            </p:autoComplete>-->
+                            
+                            
                             <br/><br/><br/><br/>
                             <p:panel id="class_details" header="Course Details">
                                 <h:outputLabel value="Course: "/>
