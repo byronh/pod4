@@ -65,6 +65,7 @@ public class GroupScheduleController implements Serializable {
     private UserSearchBean userSearchBean;
     
     // Group schedule storage
+    private GroupupGroup groupCurrentDiff = null;
     // Schedule instance
     private ScheduleModel eventModel = new DefaultScheduleModel();
     
@@ -77,6 +78,9 @@ public class GroupScheduleController implements Serializable {
     
     // These variables are used for selection, and holds fields entered by the user
     private GroupupGroup group;
+    private String selectedGroupString;
+    private List<String> groupStringList = new ArrayList();
+    private HashMap<String, GroupupGroup> stringToGroupMap = new HashMap();
     private List<GroupupGroup> groupList = new ArrayList();
     private List<GroupupGroup> groupInviteList = new ArrayList();
     
@@ -91,30 +95,54 @@ public class GroupScheduleController implements Serializable {
     private List<GroupupUser> searchUsers;
     
     private boolean loadedFromDb = false;
+    
+    
     /**
      * Creates a new instance of GroupScheduleController
      */ 
     public GroupScheduleController() {
     }
+        
+    public String encodeGroup(GroupupGroup group) {
+        String encodedGroup = group.getName() + " id=" + group.getId();
+        stringToGroupMap.put(encodedGroup, group);
+        return encodedGroup;
+    }
     
+    public GroupupGroup decodeGroup(String groupString) {
+        GroupupGroup decodedGroup = stringToGroupMap.get(groupString);
+        
+        if (decodedGroup == null) {
+            System.out.println("Error in decoding group");
+        }
+        return decodedGroup;
+    }
     // Uses group to populate eventmodel
     public void createGroupSchedule() {
         eventModel = new DefaultScheduleModel();
+        if (groupCurrentDiff == null ) {
+            System.out.println("Why is group current null");
+        }
         
+        System.out.println("Creating new group diff schedule: ");
         int memberNumber = 1;
-        for ( GroupupUser member : group.getGroupupUserCollection() ) {
+        for ( GroupupUser member : groupCurrentDiff.getGroupupUserCollection() ) {
+            System.out.println("  Loading group member: " + member.getEmail());
             for (GroupupTimeslot timeSlot : member.getGroupupTimeslotCollection()) {
-                ScheduleEvent event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), "user" + memberNumber);
+                String styleClass = "user" + memberNumber;
+                System.out.println("    Timeslot: " + timeSlot.getTitle() + " styleclass: " + styleClass);
+                ScheduleEvent event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), styleClass);
                 eventModel.addEvent(event);
                 eventToUserMap.put(event, member);
             }
-        }
-        
-        
-        
+            ++memberNumber;
+        }        
+        this.loadValues();
     }
     
+    
         public void addGroupEvent(ActionEvent actionEvent) {
+            /*
         FacesContext context = FacesContext.getCurrentInstance();
         
         // error check
@@ -176,6 +204,7 @@ public class GroupScheduleController implements Serializable {
             System.out.println(e.getStackTrace().toString());
         }
         currentEvent = new DefaultScheduleEvent();
+        * */
     }
     
     public void deleteEvent() {
@@ -220,6 +249,38 @@ public class GroupScheduleController implements Serializable {
 
     public void setSelectedGroupId(Integer selectedGroupId) {
         this.selectedGroupId = selectedGroupId;
+    }
+
+    public String getSelectedGroupString() {
+        return selectedGroupString;
+    }
+
+    public void setSelectedGroupString(String selectedGroupString) {
+        this.selectedGroupString = selectedGroupString;
+    }
+
+    public List<String> getGroupStringList() {
+        return groupStringList;
+    }
+
+    public void setGroupStringList(List<String> groupStringList) {
+        this.groupStringList = groupStringList;
+    }
+
+    public GroupupGroup getGroupCurrentDiff() {
+        return groupCurrentDiff;
+    }
+
+    public ScheduleModel getEventModel() {
+        return eventModel;
+    }
+
+    public void setEventModel(ScheduleModel eventModel) {
+        this.eventModel = eventModel;
+    }
+
+    public void setGroupCurrentDiff(GroupupGroup groupCurrentDiff) {
+        this.groupCurrentDiff = groupCurrentDiff;
     }
     
     public GroupupGroup getGroup() {
@@ -278,12 +339,42 @@ public class GroupScheduleController implements Serializable {
         this.searchUsers = searchUsers;
     }
     
+    public String onDiffScheduleClick() {
+        System.out.println("Diffing group schedule: ");
+        GroupupUser user = getUser();
+        GroupupGroup selectedGroup = decodeGroup(this.selectedGroupString);
+        
+        if (selectedGroup == null) {
+            System.out.println("No valid group Selected");
+            return null;
+        } else {
+            if (!selectedGroup.containsUser(user)) {
+                System.out.println("User selected group they don't exist in");
+                return null;
+            }
+        }
+        // set selected group to currently diffed group
+        groupCurrentDiff = selectedGroup;
+        createGroupSchedule();
+        return null;
+    }
     
     public String onEditGroupClick() {
-        if (group == null) {
+        GroupupGroup selectedGroup = decodeGroup(this.selectedGroupString);
+        
+        if (selectedGroup == null) {
+            System.out.println("No valid group Selected");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Must select group!"));
             return null;
+        }        
+        groupName = selectedGroup.getName();
+        
+        this.selectedUserList = new ArrayList();
+        for (GroupupUser member : selectedGroup.getGroupupUserCollection()) {
+            this.selectedUserList.add(encodeUserString(member));
         }
+        
+        group = selectedGroup;
         
         return "Group Edit";
         
@@ -363,6 +454,12 @@ public class GroupScheduleController implements Serializable {
         this.groupList = new ArrayList(query.getResultList());
         if (this.groupList.get(0) == null) {
             this.groupList.clear();
+        }
+        
+        this.groupStringList = new ArrayList();
+        for( GroupupGroup group : groupList) {
+            System.out.println("Repopulating grouplist: " + group.getName());
+            this.groupStringList.add(encodeGroup(group));
         }
         System.out.println("Loaded groups: " + this.groupList);
     }

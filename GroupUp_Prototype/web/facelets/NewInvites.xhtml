@@ -97,13 +97,6 @@ and open the template in the editor.
                <h:outputLabel value="Group Owner: "/>
                
              <h:outputLabel value="#{group.ownerName}"/>
-    
-               <br/><br/>
-               <h:outputLabel value="Group Members: "/>
-               
-               <h:dataTable var="members" value="#{group.groupupUserCollection}">
-                   <h:outputLabel value="#{members.fname}" />
-               </h:dataTable>
                
                <br/><br/>
                <h:inputHidden id="AcceptedID" value="#{groupScheduleController.selectedGroupId}" />

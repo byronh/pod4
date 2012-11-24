@@ -11,6 +11,7 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
@@ -53,6 +54,8 @@ public class LoginController implements Serializable {
     @Inject
     private ScheduleController scheduleController;
     
+    @EJB
+    private UserSearchBean userSearchBean;
     
     private String email;
     private String password;
@@ -110,8 +113,20 @@ public class LoginController implements Serializable {
     
     public String registerNewUser() {
         FacesContext context = FacesContext.getCurrentInstance();
+        if (!password.equals(confirmPassword)) {
+            context.addMessage(null, new FacesMessage("Error, passwords don't match!"));
+            return null;
+        }
+        
+        if (userSearchBean.findByEmail(email) != null) {
+            System.out.println("Email address already in use!" + email);
+            context.addMessage(null, new FacesMessage("Email address already in use!"));
+            return null;
+        }
+        
         try {
             utx.begin();
+            
             
             GroupupUser newUser = new GroupupUser();
             
@@ -128,18 +143,20 @@ public class LoginController implements Serializable {
 
             utx.commit();
             // return string of next webpage
+            context.addMessage(null, new FacesMessage("Account registration complete! You can log in with username: " + email + ", and the password you registered with!"));
+            
             return null;
             
         } catch (RollbackException e) {
-            context.addMessage(null, new FacesMessage(e.getMessage()));
-            System.out.println(e.getStackTrace().toString());
+            //context.addMessage(null, new FacesMessage(e.getMessage()));
+            System.out.println(e.getMessage());
             context.addMessage(null, new FacesMessage("Transaction error in creating new account (Username may be taken)"));
             return null;
         
         } catch (Exception e) {
             // copy pasted this stuff, do sth about it later
-            System.out.println(e.getStackTrace().toString());
-            context.addMessage(null, new FacesMessage(e.getMessage()));
+            System.out.println(e.getMessage());
+            //context.addMessage(null, new FacesMessage(e.getMessage()));
             context.addMessage(null, new FacesMessage("Unexpected Error in creating new account"));
             return null;
         }
@@ -168,13 +185,13 @@ public class LoginController implements Serializable {
             return "/faces/facelets/ScheduleView.xhtml?faces-redirect=true";
             
         } catch (ServletException e) {
-            e.printStackTrace();
-            context.addMessage(null, new FacesMessage(e.getMessage()));
+            System.out.println(e.getMessage());
+            context.addMessage(null, new FacesMessage("Invalid log-in. Is your username and password correct?"));
             return null;
         } catch (Exception e) {
-            context.addMessage(null, new FacesMessage(e.getMessage()));
+            System.out.println(e.getMessage());
+            context.addMessage(null, new FacesMessage("Invalid log-in. Is your username and password correct?"));
             return null;
-          
         } 
     }
     

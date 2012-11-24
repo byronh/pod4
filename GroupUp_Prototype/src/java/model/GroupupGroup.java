@@ -218,5 +218,6 @@ import javax.xml.bind.annotation.XmlTransient;
     public String toString() {
         return "model.GroupupGroup[ id=" + id + " ]";
     }
+
     
 }

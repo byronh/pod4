@@ -34,15 +34,10 @@ public class CourseSearchBean {
     
 
     
-
-
-
-
-    
     public List<GroupupCourse> findAll() {
         Query query = em.createNamedQuery("GroupupCourse.findAll");
         List<GroupupCourse> courseList = query.getResultList();
-        if(courseList.get(0) == null) {
+        if(!courseList.isEmpty() && courseList.get(0) == null) {
             System.out.println("Loaded 0 courses. check for DB errors");
             courseList.clear();
         }

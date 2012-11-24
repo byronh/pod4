@@ -42,7 +42,9 @@ public class UserSearchBean {
         query.setParameter("email", email);
         List<GroupupUser> results = query.getResultList();
         // If empty, size  =1 and first object is null
-        if (results.size() != 1) {
+        if (results.isEmpty()) {
+            return null;
+        } else if (results.size() != 1) {
             System.out.println("Error, unique email matches more than 1 user:" + email + ", " + results);
         }
         return (GroupupUser) query.getResultList().get(0);
@@ -54,8 +56,10 @@ public class UserSearchBean {
         
         List<GroupupUser> results = query.getResultList();
         // If empty, size  =1 and first object is null
-        if (results.size() != 1) {
-            System.out.println("Error, unique ID matches more than 1 user:" + results);
+        if (results.isEmpty()) {
+            return null;
+        } else if (results.size() != 1) {
+            System.out.println("Error, unique Id matches more than 1 user:" + id + ", " + results);
         }
         return (GroupupUser) query.getResultList().get(0);
     }

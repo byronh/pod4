@@ -24,7 +24,7 @@ and open the template in the editor.
                 <p:panel id="contentPanel" header="Schedule View" >  
                     <h:form id="scheduleForm" style="width: 55%">  
                     
-                        <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule" draggable="false" resizable="false" view="agendaWeek" rightHeaderTemplate="agendaWeek" allDaySlot="false">  
+                        <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule" draggable="false" resizable="false" view="agendaWeek" rightHeaderTemplate="" allDaySlot="false">  
 
                                 <p:ajax event="dateSelect" listener="#{scheduleController.onDateSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
                                 <p:ajax event="eventSelect" listener="#{scheduleController.onEventSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
