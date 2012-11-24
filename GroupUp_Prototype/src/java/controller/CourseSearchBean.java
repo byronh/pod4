@@ -4,6 +4,7 @@
  */
 package controller;
 
+import java.util.HashMap;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -31,10 +32,23 @@ public class CourseSearchBean {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
-    public void LoadCourses() {
-        
-    }
 
+    
+
+
+
+
+    
+    public List<GroupupCourse> findAll() {
+        Query query = em.createNamedQuery("GroupupCourse.findAll");
+        List<GroupupCourse> courseList = query.getResultList();
+        if(courseList.get(0) == null) {
+            System.out.println("Loaded 0 courses. check for DB errors");
+            courseList.clear();
+        }
+        return courseList;
+    }
+    
     public List<GroupupCourse> searchByDepartment(String department) {
         Query query = em.createNamedQuery("GroupupCourse.findByDept");
         query.setParameter("dept", department);

@@ -10,32 +10,43 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
 import model.GroupupGroup;
+import model.GroupupTimeslot;
 import model.GroupupUser;
+import org.primefaces.event.DateSelectEvent;
+import org.primefaces.event.ScheduleEntrySelectEvent;
 import org.primefaces.event.TransferEvent;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.DualListModel;
+import org.primefaces.model.ScheduleEvent;
+import org.primefaces.model.ScheduleModel;
 
 /**
  *
  * @author mduppes
  * 
- * This class controls the group functionality of the group schedule, such as:
+ * This bloated class controls the group functionality of the group schedule, such as:
  * Creating a new group
  * Adding users to the group
  * Removing users from the group / leaving from the group
  * Adding group events
+ * group schedule functions
  * 
  */
 @Named(value = "groupScheduleController")
@@ -52,6 +63,17 @@ public class GroupScheduleController implements Serializable {
     
     @EJB
     private UserSearchBean userSearchBean;
+    
+    // Group schedule storage
+    // Schedule instance
+    private ScheduleModel eventModel = new DefaultScheduleModel();
+    
+    // For every new activity created, the form submitted parameters fill this in
+    private ScheduleEvent currentEvent = new DefaultScheduleEvent();
+    
+    // Easy linking between timeslots and users
+    private HashMap<ScheduleEvent, GroupupUser> eventToUserMap = new HashMap();
+    
     
     // These variables are used for selection, and holds fields entered by the user
     private GroupupGroup group;
@@ -74,6 +96,103 @@ public class GroupScheduleController implements Serializable {
      */ 
     public GroupScheduleController() {
     }
+    
+    // Uses group to populate eventmodel
+    public void createGroupSchedule() {
+        eventModel = new DefaultScheduleModel();
+        
+        int memberNumber = 1;
+        for ( GroupupUser member : group.getGroupupUserCollection() ) {
+            for (GroupupTimeslot timeSlot : member.getGroupupTimeslotCollection()) {
+                ScheduleEvent event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), "user" + memberNumber);
+                eventModel.addEvent(event);
+                eventToUserMap.put(event, member);
+            }
+        }
+        
+        
+        
+    }
+    
+        public void addGroupEvent(ActionEvent actionEvent) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        
+        // error check
+        if (currentEvent.getStartDate().after(currentEvent.getEndDate())) {
+            System.out.println("Error: Start date must be before End date!");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error: Start date must be before End date!"));
+            return;
+        }
+        if(currentEvent.getId() == null) {
+            eventModel.addEvent(currentEvent);  
+        }
+        else  {
+            eventModel.updateEvent(currentEvent);  
+        }
+        
+        
+        GroupupUser user = getUser();
+        Integer dbId = scheduleToDbIdMap.get(currentEvent.getId());
+        try {
+            if (dbId == null) {
+                utx.begin();
+            
+                GroupupTimeslot newSlot = new GroupupTimeslot();
+                Collection<GroupupUser> users = new ArrayList<GroupupUser>();
+                users.add(user);
+                newSlot.setTimeSlotCollection(users);
+                newSlot.setStartTime(currentEvent.getStartDate());
+                newSlot.setEndTime(currentEvent.getEndDate());
+                newSlot.setTitle(currentEvent.getTitle());
+                user.getGroupupTimeslotCollection().add(newSlot);
+                em.merge(user);
+                em.persist(newSlot);
+                utx.commit();
+                
+                scheduleToDbIdMap.put(currentEvent.getId(), newSlot.getId());
+                
+            } else {
+                utx.begin();
+                // retrieve existing timeslot from DB and update
+                Query query = em.createNamedQuery("GroupupTimeslot.findById");
+                query.setParameter("id", dbId);
+                Collection<GroupupTimeslot> slots = query.getResultList();
+                
+                if (slots.size() != 1) {
+                    System.out.println("error in # of corresponding events: " + slots.size());
+                } else {
+                    GroupupTimeslot slot = slots.iterator().next();
+                    slot.setStartTime(currentEvent.getStartDate());
+                    slot.setEndTime(currentEvent.getEndDate());
+                    slot.setTitle(currentEvent.getTitle());
+                    em.merge(slot);
+                }
+                utx.commit();
+            }
+        } catch (RollbackException e) {
+            System.out.println(e.getStackTrace().toString());
+        } catch (Exception e) {
+            // copy pasted this stuff, do sth about it later
+            System.out.println(e.getStackTrace().toString());
+        }
+        currentEvent = new DefaultScheduleEvent();
+    }
+    
+    public void deleteEvent() {
+        
+        eventModel.deleteEvent(currentEvent);
+
+    }
+    
+    public void onEventSelect(ScheduleEntrySelectEvent selectEvent) {
+        currentEvent = selectEvent.getScheduleEvent();
+    }
+    
+    public void onDateSelect(DateSelectEvent selectEvent) {
+        // selected an empty event, populate with defaults.
+        currentEvent = new DefaultScheduleEvent("", selectEvent.getDate(), selectEvent.getDate());  
+    }
+
 
     // Gets the currently logged in user from session. duplicate code in various controllers for now..
     public GroupupUser getUser() {
@@ -152,7 +271,6 @@ public class GroupScheduleController implements Serializable {
     }
 
     public List<GroupupUser> getSearchUsers() {
-        System.out.println("WTF");
         return searchUsers;
     }
 
@@ -350,7 +468,7 @@ public class GroupScheduleController implements Serializable {
         List<String> suggestions = new ArrayList<String>();
         System.out.println("Searching for: " + query);
         for (GroupupUser p : searchUsers) {
-            if (p.getFname().startsWith(query) || p.getLname().startsWith(query) || p.getEmail().startsWith(query)) {
+            if (p.getFname().contains(query) || p.getLname().contains(query) || p.getEmail().contains(query)) {
                 suggestions.add(encodeUserString(p));
             }
         }

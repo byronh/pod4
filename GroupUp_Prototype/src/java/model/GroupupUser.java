@@ -183,6 +183,38 @@ public class GroupupUser implements Serializable {
     public void setGroupupGroupInvites(Collection<GroupupGroup> groupupGroupInvites) {
         this.groupupGroupInvites = groupupGroupInvites;
     }
+    
+    public boolean containsTimeslot(GroupupTimeslot slot) {
+        if (this.groupupTimeslotCollection.contains(slot)) {
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean pendingTimeslot(GroupupTimeslot slot) {
+        if (this.groupupTimeslotInvites.contains(slot)) {
+            return true;
+        }
+        return false;
+    }
+    
+    public void addTimeSlot(GroupupTimeslot slot) {
+        System.out.println("Adding timeslot to user: " + this.email + ", slot: " + slot);
+        if (containsTimeslot(slot)) {
+            System.out.println("Trying to add already contained slot: " + slot);
+            return;
+        }
+        if (pendingTimeslot(slot)) {
+            this.groupupTimeslotInvites.remove(slot);
+        }
+        this.groupupTimeslotCollection.add(slot);
+    }
+    
+    public void inviteTimeSlot(GroupupTimeslot slot) {
+        if (!containsTimeslot(slot) && !pendingTimeslot(slot) ) {
+            this.groupupTimeslotInvites.add(slot);
+        }
+    }
 
     @Override
     public int hashCode() {

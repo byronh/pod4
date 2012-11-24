@@ -60,21 +60,34 @@ and open the template in the editor.
 
 
                         </h:form>  
-                        
+
+
                         <h:form id="edit_right_form" style="position:fixed;  top:15%; right:15%;width:20%;">
-                            <h:outputLabel value="Search UBC Course: "/>  
-                            <p:autoComplete id="searchCourse" value="#{groupScheduleController.selectedUserList}"
-                                            completeMethod="#{groupScheduleController.completeUsers}" multiple="true" />
-                                
+                            <h:outputLabel value="Search UBC Course: " />  
+                                                    <p:autoComplete  id="searchCourse" value="#{scheduleController.selectedCourseString}"
+                                                                     completeMethod="#{scheduleController.completeClasses}" >
+                                                        <p:ajax event="itemSelect" listener="#{scheduleController.onSelectedClass}"  update="class_details" />  
+                                                    </p:autoComplete>
+                                                        
                             <br/><br/><br/><br/>
                             <p:panel id="class_details" header="Course Details">
                                 <h:outputLabel value="Course: "/>
+                                <h:outputLabel value="#{scheduleController.selectedCourse.dept} #{scheduleController.selectedCourse.coursenum}" />
                                 <br/><br/>
-                                <h:outputLabel value="Sessions: "/>
+                                <h:outputLabel value="Term: " />
+                                <h:outputLabel value="#{scheduleController.selectedCourse.term}" />
+                                <h:outputLabel value="Section: "/>
+                                <h:outputLabel value="#{scheduleController.selectedCourse.section}"/>
                                 <br/><br/>
                                 <h:outputLabel value="Times: "/>
-                                <br/><br/>
-                                <h:outputLabel value="Location: "/>
+                                <h:dataTable var="timeslot" value="#{scheduleController.selectedCourseTimeSlots}">
+                                    <h:outputLabel value="#{timeslot.dayOfWeekString}" />
+                                    <h:outputLabel value="#{timeslot.startTime}" >
+                                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" /> </h:outputLabel>
+                                    <h:outputLabel value=" to "/>
+                                    <h:outputLabel value="#{timeslot.endTime}" >
+                                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" /></h:outputLabel>
+                                </h:dataTable>
                                 <br/><br/>
                                 <!--Or Remove from Schedule-->
                                 <p:button value="Add to Schedule" />  

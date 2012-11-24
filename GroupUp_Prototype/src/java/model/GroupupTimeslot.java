@@ -21,6 +21,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -49,6 +50,10 @@ public class GroupupTimeslot implements Serializable {
     
     @Column(name = "title")
     private String title;
+    
+    // Not even used, hack to convert from int to day of week
+    @Transient
+    private String getDayOfWeek;
     
     @Column(name = "reccurance")
     private Short reccurance;
@@ -85,7 +90,31 @@ public class GroupupTimeslot implements Serializable {
     private Collection<GroupupUser> timeSlotInviteCollection;
     
     public GroupupTimeslot() {
+       
     }
+
+    // Hack, don't know a better way to convert
+    public String getDayOfWeekString() {
+        switch( dayOfWeek ) {
+            case 1:
+                return "Monday";
+            case 2:
+                return "Tuesday";
+            case 3:
+                return "Wednesday";
+            case 4:
+                return "Thursday";
+            case 5:
+                return "Friday";
+            case 6:
+                return "Saturday";
+            default:
+                System.out.println("ERROR no matching day of week: " + dayOfWeek);
+                return "ERROR";
+        }
+    }
+    
+    
 
     public Integer getId() {
         return id;

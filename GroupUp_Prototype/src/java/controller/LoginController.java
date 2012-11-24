@@ -197,6 +197,7 @@ public class LoginController implements Serializable {
     
     public void loadFromDb() {
         scheduleController.loadSchedule();
+        scheduleController.loadCourses();
         groupScheduleController.loadValues();
         
     }
