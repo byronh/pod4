@@ -260,7 +260,13 @@ public class ScheduleController implements Serializable {
                 while(timeslotIterator.hasNext()) {
                     GroupupTimeslot timeSlot = timeslotIterator.next();
                     System.out.println("Populating event: " + timeSlot.getTitle() + ", from: " + timeSlot.getStartTime() + ", to: " + timeSlot.getEndTime());
-                    ScheduleEvent event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime());
+                    
+                    ScheduleEvent event;
+                    if (timeSlot.getGroupId() == null) {
+                        event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime());
+                    } else {
+                        event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), "group1");
+                    }
                     eventModel.addEvent(event);
                     scheduleToDbIdMap.put(event.getId(), timeSlot.getId());
                 }
@@ -268,6 +274,7 @@ public class ScheduleController implements Serializable {
                 loadedSchedule = true;
                 System.out.println("loaded schedule for user: " + user.getEmail());
             }
+            
         }
     }
     

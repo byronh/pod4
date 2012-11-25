@@ -10,11 +10,11 @@
     background: red;
 }
 .user2 .fc-event-skin {
-   background: green;
+   background: darkblue;
  }
  
  .user3 .fc-event-skin {
-    background: yellow;
+    background: maroon;
 }
 .user4 .fc-event-skin {
    background: orange;
@@ -35,7 +35,7 @@
     background: purple;
 }
 .user10 .fc-event-skin {
-   background: palegreen;
+   background: threedface;
  }
  .user11 .fc-event-skin {
     background: plum;
@@ -49,4 +49,8 @@
 }
 .user14 .fc-event-skin {
    background: palevioletred;
+ }
+ 
+ .group1 .fc-event-skin {
+     background: green
  }

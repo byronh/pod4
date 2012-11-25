@@ -181,6 +181,8 @@ public class LoginController implements Serializable {
                 message = "Invalid Security Role!";
             }
             
+            // Load user data fromDB
+            loadFromDb();
             context.addMessage(null, new FacesMessage(message));
             return "/faces/facelets/ScheduleView.xhtml?faces-redirect=true";
             
@@ -213,6 +215,7 @@ public class LoginController implements Serializable {
     }
     
     public void loadFromDb() {
+        System.out.println("Loading schedules from DB");
         scheduleController.loadSchedule();
         scheduleController.loadCourses();
         groupScheduleController.loadValues();

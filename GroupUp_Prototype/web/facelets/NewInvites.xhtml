@@ -19,64 +19,30 @@ and open the template in the editor.
             <ui:define name="content">
                                
                 <p:panel id="contentPanel" header="New Invites" >  
-                    <h3>You have 3 New Event Invites!!</h3> 
+                    <h3>Event Invites!</h3> 
                     
-                    <p:accordionPanel style="width:40%">  
-                            <p:tab title="Alex Rowe Invites You to Study">  
-
-                                <h:panelGrid columns="2" cellpadding="10">  
-                                    <h:outputLabel value="date"/>
-                                                   <br/>
-                                    <h:outputLabel value="Recurring: No"/>
-                                                    <br/>
-                                    <h:outputLabel value="Time: 12:00pm"/>
-                                                   <br/>
-                                    <h:outputLabel value="Location: ???"/>
-                                                    <br/>
-                                    <h:outputText  
-                                        value="Message: Hi! Would you like to join our study group?" />  
-                                    <br/>
-                                    <p:button value="Accept" /> 
-                                    <p:button value="Decline" />
-
-                                </h:panelGrid>  
-                            </p:tab>  
-        <p:tab title="Laura Khan Invites You to Project Meeting">  
-                        <h:panelGrid columns="2" cellpadding="10">  
-                <h:outputLabel value="Date: Nov 13, 2012"/>
-                               <br/>
-                <h:outputLabel value="Recurring: No"/>
-                               <br/>
-                <h:outputLabel value="Time: 08:00pm"/>
-                                <br/>
-                <h:outputLabel value="Location: ???"/>
-                                <br/>
-                <h:outputText  
-                    value="Message: Hi! Would you like to join our Project Meeting?" />  
-                <br/>
-                <p:button value="Accept" /> 
-                <p:button value="Decline" />
-                
-            </h:panelGrid> 
-        </p:tab>  
-        <p:tab title="Adam Jones Invites you to Assignment Discussion">  
-                       <h:panelGrid columns="2" cellpadding="10">  
-                <h:outputLabel value="Date: Nov 15, 2012"/>
-                               <br/>
-                <h:outputLabel value="Recurring: Weekly"/>
-                                <br/>
-                <h:outputLabel value="Time: 05:00pm"/>
-                                <br/>
-                <h:outputLabel value="Location: ???"/>
-                                <br/>
-                <h:outputText  
-                    value="Message: Hi! Would you like to join our discussion?" />  
-                <br/>
-                <p:button value="Accept" /> 
-                <p:button value="Decline" />
-                
-            </h:panelGrid> 
-        </p:tab>  
+                    <p:accordionPanel value="#{groupScheduleController.timeslotInviteList}" var="groupevent" style="width:40%;">
+                        <p:tab title="You're invited to join #{groupevent.title}">
+                <h:form id="myForm">
+               <h:outputLabel value="Group: "/>
+               <h:outputLabel value="#{groupevent.groupName}"/>
+               <br/>
+               <h:outputLabel value="Starts: "/>
+               <h:outputLabel value="#{groupevent.startTime}" pattern="MM/dd/yyyy HH:mm"/>
+               <br/>
+               <h:outputLabel value="Ends: " />
+               <h:outputLabel value="#{groupevent.endTime}" pattern="MM/dd/yyyy HH:mm" />
+               <br/><br/>
+               
+               <p:commandButton value="Accept" action="New Invites" ajax="false" actionListener="#{groupScheduleController.acceptEventInvite}">
+                   <f:param name="timeslotId" value="#{groupevent.id}" />
+               </p:commandButton>
+               <p:commandButton value="Decline" action="New Invites" ajax="false" actionListener="#{groupScheduleController.declineEventInvite}">
+                   <f:param name="timeslotId" value="#{groupevent.id}" />
+               </p:commandButton>
+               </h:form>
+         
+        </p:tab>
     </p:accordionPanel>  
                     
     <h3 style="width:40%; position: absolute;top:8%; right:5%;">Group Invites</h3> 
@@ -99,8 +65,6 @@ and open the template in the editor.
              <h:outputLabel value="#{group.ownerName}"/>
                
                <br/><br/>
-               <h:inputHidden id="AcceptedID" value="#{groupScheduleController.selectedGroupId}" />
-               
                
                <p:commandButton value="Accept" action="New Invites" ajax="false" actionListener="#{groupScheduleController.acceptInvite}">
                    <f:param name="groupId" value="#{group.id}" />
