@@ -5,6 +5,8 @@
 package model;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -53,7 +55,13 @@ public class GroupupTimeslot implements Serializable {
     
     // Not even used, hack to convert from int to day of week
     @Transient
-    private String getDayOfWeek;
+    private String dayOfWeekString;
+    
+    @Transient
+    private String startTimeString;
+    
+    @Transient
+    private String endTimeString;
     
     @Column(name = "reccurance")
     private Short reccurance;
@@ -98,26 +106,31 @@ public class GroupupTimeslot implements Serializable {
         return groupId.getName();
     }
 
-    // Hack, don't know a better way to convert
     public String getDayOfWeekString() {
-        switch( dayOfWeek ) {
-            case 1:
-                return "Monday";
-            case 2:
-                return "Tuesday";
-            case 3:
-                return "Wednesday";
-            case 4:
-                return "Thursday";
-            case 5:
-                return "Friday";
-            case 6:
-                return "Saturday";
-            default:
-                System.out.println("ERROR no matching day of week: " + dayOfWeek);
-                return "ERROR";
-        }
+        return dayOfWeekString;
     }
+
+    public void setDayOfWeekString(String dayOfWeekString) {
+        this.dayOfWeekString = dayOfWeekString;
+    }
+
+    public String getStartTimeString() {
+        return startTimeString;
+    }
+
+    public void setStartTimeString(String startTimeString) {
+        this.startTimeString = startTimeString;
+    }
+
+    public String getEndTimeString() {
+        return endTimeString;
+    }
+
+    public void setEndTimeString(String endTimeString) {
+        this.endTimeString = endTimeString;
+    }
+
+
     
     public void addUser(GroupupUser user) {
         if (this.timeSlotCollection.contains(user)) {
@@ -167,6 +180,24 @@ public class GroupupTimeslot implements Serializable {
 
     public void setDayOfWeek(Short dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
+                System.out.println("Day of week: ");
+        switch( dayOfWeek ) {
+            case 1:
+                dayOfWeekString = "Monday";
+            case 2:
+                dayOfWeekString= "Tuesday";
+            case 3:
+                dayOfWeekString = "Wednesday";
+            case 4:
+                dayOfWeekString= "Thursday";
+            case 5:
+                dayOfWeekString= "Friday";
+            case 6:
+                dayOfWeekString= "Saturday";
+            default:
+                System.out.println("ERROR no matching day of week: " + dayOfWeek);
+                dayOfWeekString= "ERROR";
+        }
     }
 
     public Date getStartTime() {
@@ -175,14 +206,19 @@ public class GroupupTimeslot implements Serializable {
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
+        DateFormat f = new SimpleDateFormat("hh:mm");
+        startTimeString = f.format(startTime);
     }
 
     public Date getEndTime() {
         return endTime;
     }
-
+    
+    
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+        DateFormat f = new SimpleDateFormat("hh:mm");
+        this.endTimeString = f.format(endTime);
     }
 
     public Collection<GroupupUser> getTimeSlotCollection() {

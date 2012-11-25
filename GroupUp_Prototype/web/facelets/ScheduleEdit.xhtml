@@ -71,18 +71,20 @@ and open the template in the editor.
                                 <h:outputLabel value="Section: "/>
                                 <h:outputLabel value="#{scheduleController.selectedCourse.section}"/>
                                 <br/><br/>
+                                <!--
                                 <h:outputLabel value="Times: "/>
+                                
                                 <h:dataTable var="timeslot" value="#{scheduleController.selectedCourseTimeSlots}">
-                                    <h:outputLabel value="#{timeslot.dayOfWeekString}" />
-                                    <h:outputLabel value="#{timeslot.startTime}" >
-                                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" /> </h:outputLabel>
-                                    <h:outputLabel value=" to "/>
-                                    <h:outputLabel value="#{timeslot.endTime}" >
-                                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" /></h:outputLabel>
+                                    <h:outputLabel value="#{timeslot.dayOfWeek}" />
+                                    <br/>
+                                    <h:outputLabel value="#{timeslot.startTimeString}"/>
+                                    <br/>
+                                    <h:outputLabel value="#{timeslot.endTimeString}" />
                                 </h:dataTable>
                                 <br/><br/>
+                                -->
                                 <!--Or Remove from Schedule-->
-                                <p:button value="Add to Schedule" />  
+                                <p:commandButton ajax="false" actionListener="#{scheduleController.addCourseToSchedule}" value="Add to Schedule" />  
                             </p:panel>
                                
                         </h:form>

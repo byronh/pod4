@@ -139,6 +139,8 @@ public class LoginController implements Serializable {
             byte[] hash = md.digest(password.getBytes("UTF-8"));
             newUser.setPassword(Base64.encodeBase64String(hash));
             
+            System.out.println("New User: " + email);
+            System.out.println("  Pass hash: " + Base64.encodeBase64String(hash));
             em.persist(newUser);
 
             utx.commit();
@@ -171,7 +173,10 @@ public class LoginController implements Serializable {
         try {
             //Login
             request.login(email, password);
-            
+            System.out.println("Login User: " + email);
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes("UTF-8"));
+            System.out.println("Pass hash: " + Base64.encodeBase64String(hash));
             //Get principal, which is the identifier for this user
             Principal principal = request.getUserPrincipal();
             

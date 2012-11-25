@@ -22,7 +22,7 @@ for row in reader:
     if row[4] not in map(str, range(0,3)): # Not sure what to do with courses with term A,B,C,D. Ignore them?
         invalid_course_ids.append(row[0])
         continue
-    query = "INSERT INTO `groupup_course` (id, coursenum, dept, section, term) " + \
+    query = "INSERT INTO `groupup_course` (id, dept, coursenum, section, term) " + \
             "VALUES (%s, %s, %s, %s, %s)"
     cursor.execute(query, tuple(row))
 db.commit()

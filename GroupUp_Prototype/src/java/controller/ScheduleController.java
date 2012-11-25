@@ -10,8 +10,10 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -84,6 +86,7 @@ public class ScheduleController implements Serializable {
     
     // user selection
     private GroupupCourse selectedCourse = new GroupupCourse();
+    
     
     // Duplicate code in various managed bean classes to get the current logged in user
     public GroupupUser getUser() {
@@ -262,10 +265,14 @@ public class ScheduleController implements Serializable {
                     System.out.println("Populating event: " + timeSlot.getTitle() + ", from: " + timeSlot.getStartTime() + ", to: " + timeSlot.getEndTime());
                     
                     ScheduleEvent event;
-                    if (timeSlot.getGroupId() == null) {
-                        event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime());
-                    } else {
+                    if (timeSlot.getCourseId() != null) {
+                        addCourseToSchedule(timeSlot);
+                        continue;
+                    } else
+                    if (timeSlot.getGroupId() != null) {
                         event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), "group1");
+                    } else {
+                        event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime());
                     }
                     eventModel.addEvent(event);
                     scheduleToDbIdMap.put(event.getId(), timeSlot.getId());
@@ -277,6 +284,59 @@ public class ScheduleController implements Serializable {
             
         }
     }
+    
+    public void addCourseToSchedule(GroupupTimeslot timeslot) {
+        System.out.println("Adding course to schedule");
+        Calendar startTerm1 = new GregorianCalendar(2012, 8, 1);
+        Calendar endTerm1 = new GregorianCalendar(2012, 11, 5);
+        Calendar startTerm2 = new GregorianCalendar(2013, 0, 2);
+        Calendar endTerm2 = new GregorianCalendar(2013, 3, 15);
+
+
+        Calendar startDate, endDate;
+        if (timeslot.getCourseId().getTerm() == 1) {
+            startDate = startTerm1;
+            endDate = endTerm1;
+        } else if (timeslot.getCourseId().getTerm() == 2) {
+            startDate = startTerm2;
+            endDate = endTerm2;
+        } else {
+            startDate = startTerm1;
+            endDate = endTerm2;
+        }
+
+        // make sure start < end
+        if (startDate.after(endDate)) {
+            System.out.println("Something wrong with course time: " + timeslot);
+            return;
+        }
+        int dayOfWeekCalendar = startDate.DAY_OF_WEEK;
+        dayOfWeekCalendar = (timeslot.getDayOfWeek() - dayOfWeekCalendar + 8) % 7;
+        startDate.add(Calendar.DATE, dayOfWeekCalendar);
+        System.out.println("Start date: " + startDate.DAY_OF_WEEK + ", adding: " + dayOfWeekCalendar);
+        
+        
+        Calendar startSlot = (Calendar) startDate.clone();
+        startSlot.add(Calendar.HOUR, timeslot.getStartTime().getHours());
+        startSlot.add(Calendar.MINUTE, timeslot.getStartTime().getMinutes());
+        Calendar endSlot = (Calendar) startDate.clone();
+        endSlot.add(Calendar.HOUR, timeslot.getEndTime().getHours());
+        endSlot.add(Calendar.MINUTE, timeslot.getEndTime().getMinutes());
+        
+            String courseName = timeslot.getCourseId().getDept() + " " + timeslot.getCourseId().getCoursenum();
+        while (startSlot.before(endDate)) {
+            System.out.println("Class: " + courseName);
+            System.out.println("Start: " + startSlot.getTime());
+            System.out.println("End: " + endSlot.getTime());
+            ScheduleEvent event = new DefaultScheduleEvent(courseName, startSlot.getTime(), endSlot.getTime(), "user2");
+            eventModel.addEvent(event);
+            scheduleToDbIdMap.put(event.getId(), timeslot.getId());
+            startSlot.add(Calendar.DATE, 7);
+            endSlot.add(Calendar.DATE, 7);
+        }
+    }
+    
+    
     
     
     // loads all courses from DB
@@ -311,44 +371,64 @@ public class ScheduleController implements Serializable {
         }
         
         GroupupUser user = getUser();
-       
-        
-    
-        for(GroupupTimeslot timeslot : selectedCourseTimeSlots) {
-            user.addTimeSlot(timeslot);
-            eventModel.addEvent( new DefaultScheduleEvent(selectedCourseString, timeslot.getStartTime(), timeslot.getEndTime()));
-            this.scheduleToDbIdMap.put(selectedCourseString, timeslot.getId());
-        }
-        
         try {
             utx.begin();
+            for(GroupupTimeslot timeslot : selectedCourseTimeSlots) {
+                // Inefficient but declare over and over to set correct datetime
+
+                
+                user.addTimeSlot(timeslot);
+                this.addCourseToSchedule(timeslot);
+                timeslot.addUser(user);
+                
+                em.merge(timeslot);
+            }
             em.merge(user);
             utx.commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        System.out.println("Finished adding course");
+        
     }
     
     public List<String> completeClasses(String query) {
         List<String> suggestions = new ArrayList<String>();
         System.out.println("Searching for: " + query);
         // Linear search for now..
+        List<String> goodSuggestions = new ArrayList<String>();
         for (GroupupCourse course : this.courseList) {
+            int score = 0;
             // Only search based on department and course number, false positives may occur if other number match in the query
-            if (query.contains(course.getDept()) && query.contains(course.getCoursenum())) {
-                suggestions.add(encodeCourse(course));
+            if (query.contains(course.getDept()) || query.contains(course.getDept().toLowerCase())) {
+                score += 1;
+            } 
+            
+            if (query.contains(course.getCoursenum())) {
+                score += 1;
+            }
+            
+            if (score == 2) {
+                goodSuggestions.add(encodeCourse(course));
+            } else if(score == 1) {
+                if ( suggestions.size() < 10) {
+                    suggestions.add(encodeCourse(course));
+                }
             }
         }
-        return suggestions;
+        goodSuggestions.addAll(suggestions);
+        return goodSuggestions;
     }
     
     public void onSelectedClass(SelectEvent event) {
         System.out.println("User selected class");
 
         selectedCourse = decodeCourse(selectedCourseString);
-        this.selectedCourseTimeSlots = new ArrayList(selectedCourse.getGroupupTimeslotCollection());
+        selectedCourseTimeSlots = new ArrayList(selectedCourse.getGroupupTimeslotCollection());
         System.out.println("course: " + selectedCourseString + ", timeslots: " + selectedCourseTimeSlots);
-        
+        for (GroupupTimeslot slot : selectedCourseTimeSlots) {
+            System.out.println("DOWINT: " + slot.getDayOfWeek() + ", start: " + slot.getStartTime());
+        }
         selectedCourseString = "";
         courseMap.clear();
     }

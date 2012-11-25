@@ -9,7 +9,9 @@ import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,15 +140,14 @@ public class GroupScheduleController implements Serializable {
         int memberNumber = 1;
         for ( GroupupUser member : groupCurrentDiff.getGroupupUserCollection() ) {
             System.out.println("  Loading group member: " + member.getEmail());
+            String styleClass = "user" + memberNumber;
             for (GroupupTimeslot timeSlot : member.getGroupupTimeslotCollection()) {
-                if (timeSlot.getGroupId() == null) {
-                    // This is a normal non-group timeslot
-                    String styleClass = "user" + memberNumber;
-                    System.out.println("    Timeslot: " + timeSlot.getTitle() + " styleclass: " + styleClass);
-                    ScheduleEvent event = new DefaultScheduleEvent(member.getFname() + ": " + timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), styleClass);
-                    eventModel.addEvent(event);
-                    eventToUserMap.put(event, member);
-                } else {
+                if (timeSlot.getCourseId() != null ) {
+                    this.addCourseToSchedule(timeSlot, styleClass);
+                    continue;
+                    
+                }
+                if (timeSlot.getGroupId() != null) {
                     
                     // This is a group timeslot
                     GroupupGroup group = timeSlot.getGroupId();
@@ -155,6 +156,13 @@ public class GroupScheduleController implements Serializable {
                     eventToGroupMap.put(event, group);
                     
                     System.out.println("Populated timeslot for group: " + group.toString());
+                } else {
+                    // This is a normal non-group timeslot
+                    
+                    System.out.println("    Timeslot: " + timeSlot.getTitle() + " styleclass: " + styleClass);
+                    ScheduleEvent event = new DefaultScheduleEvent(member.getFname() + ": " + timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), styleClass);
+                    eventModel.addEvent(event);
+                    eventToUserMap.put(event, member);
                 }
             }
             ++memberNumber;
@@ -396,6 +404,58 @@ public class GroupScheduleController implements Serializable {
         this.searchUsers = searchUsers;
     }
     
+    // Bad, duplicate code with schedule controller
+    public void addCourseToSchedule(GroupupTimeslot timeslot, String styleclass) {
+        System.out.println("Adding course to schedule");
+        Calendar startTerm1 = new GregorianCalendar(2012, 8, 1);
+        Calendar endTerm1 = new GregorianCalendar(2012, 11, 5);
+        Calendar startTerm2 = new GregorianCalendar(2013, 0, 2);
+        Calendar endTerm2 = new GregorianCalendar(2013, 3, 15);
+
+
+        Calendar startDate, endDate;
+        if (timeslot.getCourseId().getTerm() == 1) {
+            startDate = startTerm1;
+            endDate = endTerm1;
+        } else if (timeslot.getCourseId().getTerm() == 2) {
+            startDate = startTerm2;
+            endDate = endTerm2;
+        } else {
+            startDate = startTerm1;
+            endDate = endTerm2;
+        }
+
+        // make sure start < end
+        if (startDate.after(endDate)) {
+            System.out.println("Something wrong with course time: " + timeslot);
+            return;
+        }
+        int dayOfWeekCalendar = startDate.DAY_OF_WEEK;
+        dayOfWeekCalendar = (timeslot.getDayOfWeek() - dayOfWeekCalendar + 8) % 7;
+        startDate.add(Calendar.DATE, dayOfWeekCalendar);
+        System.out.println("Start date: " + startDate.DAY_OF_WEEK + ", adding: " + dayOfWeekCalendar);
+        
+        
+        Calendar startSlot = (Calendar) startDate.clone();
+        startSlot.add(Calendar.HOUR, timeslot.getStartTime().getHours());
+        startSlot.add(Calendar.MINUTE, timeslot.getStartTime().getMinutes());
+        Calendar endSlot = (Calendar) startDate.clone();
+        endSlot.add(Calendar.HOUR, timeslot.getEndTime().getHours());
+        endSlot.add(Calendar.MINUTE, timeslot.getEndTime().getMinutes());
+        
+        GroupupUser currentUser = getUser();
+        String courseName = timeslot.getCourseId().getDept() + " " + timeslot.getCourseId().getCoursenum();
+        while (startSlot.before(endDate)) {
+            System.out.println("Class: " + courseName);
+            System.out.println("Start: " + startSlot.getTime());
+            System.out.println("End: " + endSlot.getTime());
+            ScheduleEvent event = new DefaultScheduleEvent(courseName, startSlot.getTime(), endSlot.getTime(), styleclass);
+            eventModel.addEvent(event);
+            eventToUserMap.put(event, currentUser);
+            startSlot.add(Calendar.DATE, 7);
+            endSlot.add(Calendar.DATE, 7);
+        }
+    }
     public String onDiffScheduleClick() {
         System.out.println("Diffing group schedule: ");
         GroupupUser user = getUser();
