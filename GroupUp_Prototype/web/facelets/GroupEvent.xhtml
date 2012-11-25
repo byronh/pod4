@@ -66,7 +66,26 @@ and open the template in the editor.
             <!--only shows when user clicks on diff schedule button-->
             <h:form id="diffResultForm" style="position:fixed; top:15%; right:5%;width: 40%">  
                 <p:schedule id ="diffResult" value="#{groupScheduleController.eventModel}" widgetVar="myschedule"  draggable="false" resizable="false" allDaySlot="false" view="agendaWeek" rightHeaderTemplate="">  
+                    <p:ajax event="dateSelect" listener="#{groupScheduleController.onDateSelect}" update="eventDetails" onstart="eventDialog.show()" />  
+                    <p:ajax event="eventSelect" listener="#{groupScheduleController.onEventSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
+                                
                 </p:schedule>  
+                
+                <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">  
+
+                    <h:panelGrid id="eventDetails" columns="2">  
+                        <h:outputLabel for="title" value="Title:" />  
+                        <p:inputText id="title" value="#{groupScheduleController.currentEvent.title}"  required="true"/>  
+
+                        <h:outputLabel for="from" value="From:" /> 
+                        <p:calendar value="#{groupScheduleController.currentEvent.startDate}" pattern="MM/dd/yyyy HH:mm" />
+
+                        <h:outputLabel for="to" value="To:" />  
+                        <p:calendar value="#{groupScheduleController.currentEvent.endDate}" pattern="MM/dd/yyyy HH:mm" />
+
+                        <p:commandButton value="Save" actionListener="#{groupScheduleController.addGroupEvent}" oncomplete="myschedule.update();eventDialog.hide();"/>  
+                    </h:panelGrid>  
+               </p:dialog> 
            </h:form>  
         </div>
                   

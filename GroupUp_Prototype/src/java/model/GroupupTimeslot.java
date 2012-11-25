@@ -92,6 +92,11 @@ public class GroupupTimeslot implements Serializable {
     public GroupupTimeslot() {
        
     }
+    
+    @Transient
+    public String getGroupName() {
+        return groupId.getName();
+    }
 
     // Hack, don't know a better way to convert
     public String getDayOfWeekString() {
@@ -114,6 +119,22 @@ public class GroupupTimeslot implements Serializable {
         }
     }
     
+    public void addUser(GroupupUser user) {
+        if (this.timeSlotCollection.contains(user)) {
+            return;
+        }
+        
+        if (this.timeSlotInviteCollection.contains(user)) {
+            this.timeSlotInviteCollection.remove(user);
+        }
+        
+        this.timeSlotCollection.add(user);
+    }
+    
+    public void removeUser(GroupupUser user) {
+        this.timeSlotCollection.remove(user);
+        this.timeSlotInviteCollection.remove(user);
+    }
     
 
     public Integer getId() {
@@ -222,5 +243,6 @@ public class GroupupTimeslot implements Serializable {
     public String toString() {
         return "model.GroupupTimeslot[ id=" + id + " ]";
     }
+    
     
 }

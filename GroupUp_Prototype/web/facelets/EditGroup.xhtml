@@ -28,19 +28,10 @@
                                             completeMethod="#{groupScheduleController.completeUsers}" multiple="true">
                                 </p:autoComplete>
                             
-                            <p:commandButton id="submitGroupB" type="submit" value="Save Changes" update="display" actionListener="#{groupScheduleController.createGroup}"/>
+                            <p:commandButton id="submitGroupB" type="submit" value="Save Changes" actionListener="#{groupScheduleController.createGroup}"/>
                             <p:button value="Cancel" outcome="Group Event"/> 
 
-                        <p:dialog modal="true" widgetVar="textDialog" showEffect="fade" width="200" resizable="false" header="Selected Values">  
-                            <p:outputPanel id="display">  
-                                <p:dataList value="#{groupScheduleController.selectedUserList}" var="user" id="users">  
-                                    <f:facet name="header">  
-                                        Users  
-                                    </f:facet>  
-                                    <h:outputText value="" id="user"/>  
-                                </p:dataList>  
-                            </p:outputPanel>  
-                        </p:dialog>  
+ 
 
 
                         </h:form>

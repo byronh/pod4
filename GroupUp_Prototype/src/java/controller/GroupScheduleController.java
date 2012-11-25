@@ -21,6 +21,7 @@ import javax.faces.event.ActionEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.RollbackException;
@@ -47,6 +48,7 @@ import org.primefaces.model.ScheduleModel;
  * Removing users from the group / leaving from the group
  * Adding group events
  * group schedule functions
+ * TODO: Refactor  
  * 
  */
 @Named(value = "groupScheduleController")
@@ -61,6 +63,7 @@ public class GroupScheduleController implements Serializable {
     @Resource
     private UserTransaction utx;
     
+    // Searching users from DB
     @EJB
     private UserSearchBean userSearchBean;
     
@@ -74,8 +77,10 @@ public class GroupScheduleController implements Serializable {
     
     // Easy linking between timeslots and users
     private HashMap<ScheduleEvent, GroupupUser> eventToUserMap = new HashMap();
+    private HashMap<ScheduleEvent, GroupupGroup> eventToGroupMap = new HashMap();
     
-    
+    // hack..
+    private String currentEventUser = "";
     // These variables are used for selection, and holds fields entered by the user
     private GroupupGroup group;
     private String selectedGroupString;
@@ -84,6 +89,8 @@ public class GroupScheduleController implements Serializable {
     private List<GroupupGroup> groupList = new ArrayList();
     private List<GroupupGroup> groupInviteList = new ArrayList();
     
+    private List<GroupupTimeslot> timeslotInviteList = new ArrayList();
+    
     // Used for group member movement
     private List<String> selectedUserList = new ArrayList();
     private GroupupUser selectedUser;
@@ -91,11 +98,13 @@ public class GroupScheduleController implements Serializable {
     
     // Used for group member invites
     private Integer selectedGroupId;
+    private Integer selectedEventInviteId;
     
     private List<GroupupUser> searchUsers;
     
     private boolean loadedFromDb = false;
     
+    private String groupStyleClass = "group1";
     
     /**
      * Creates a new instance of GroupScheduleController
@@ -120,6 +129,7 @@ public class GroupScheduleController implements Serializable {
     // Uses group to populate eventmodel
     public void createGroupSchedule() {
         eventModel = new DefaultScheduleModel();
+        eventToGroupMap = new HashMap();
         if (groupCurrentDiff == null ) {
             System.out.println("Why is group current null");
         }
@@ -129,21 +139,50 @@ public class GroupScheduleController implements Serializable {
         for ( GroupupUser member : groupCurrentDiff.getGroupupUserCollection() ) {
             System.out.println("  Loading group member: " + member.getEmail());
             for (GroupupTimeslot timeSlot : member.getGroupupTimeslotCollection()) {
-                String styleClass = "user" + memberNumber;
-                System.out.println("    Timeslot: " + timeSlot.getTitle() + " styleclass: " + styleClass);
-                ScheduleEvent event = new DefaultScheduleEvent(timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), styleClass);
-                eventModel.addEvent(event);
-                eventToUserMap.put(event, member);
+                if (timeSlot.getGroupId() == null) {
+                    // This is a normal non-group timeslot
+                    String styleClass = "user" + memberNumber;
+                    System.out.println("    Timeslot: " + timeSlot.getTitle() + " styleclass: " + styleClass);
+                    ScheduleEvent event = new DefaultScheduleEvent(member.getFname() + ": " + timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), styleClass);
+                    eventModel.addEvent(event);
+                    eventToUserMap.put(event, member);
+                } else {
+                    
+                    // This is a group timeslot
+                    GroupupGroup group = timeSlot.getGroupId();
+                    ScheduleEvent event = new DefaultScheduleEvent("Group " + group.getName() + ": " + timeSlot.getTitle(), timeSlot.getStartTime(), timeSlot.getEndTime(), groupStyleClass);
+                    eventModel.addEvent(event);
+                    eventToGroupMap.put(event, group);
+                    
+                    System.out.println("Populated timeslot for group: " + group.toString());
+                }
             }
             ++memberNumber;
         }        
         this.loadValues();
     }
+
+    public String getCurrentEventUser() {
+        return currentEventUser;
+    }
+
+    public void setCurrentEventUser(String currentEventUser) {
+        this.currentEventUser = currentEventUser;
+    }
+
+    public Integer getSelectedEventInviteId() {
+        return selectedEventInviteId;
+    }
+
+    public void setSelectedEventInviteId(Integer selectedEventInviteId) {
+        this.selectedEventInviteId = selectedEventInviteId;
+    }
+
+
     
     
-        public void addGroupEvent(ActionEvent actionEvent) {
-            /*
-        FacesContext context = FacesContext.getCurrentInstance();
+    public void addGroupEvent(ActionEvent actionEvent) {
+        System.out.println("Trying to add new group event");
         
         // error check
         if (currentEvent.getStartDate().after(currentEvent.getEndDate())) {
@@ -151,60 +190,49 @@ public class GroupScheduleController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error: Start date must be before End date!"));
             return;
         }
-        if(currentEvent.getId() == null) {
-            eventModel.addEvent(currentEvent);  
-        }
-        else  {
-            eventModel.updateEvent(currentEvent);  
+        if(currentEvent.getId() != null) {
+            System.out.println("Error creating group event, something wrong");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error: Can only create group events here!"));
+             
+            return;
         }
         
+        GroupupUser user = eventToUserMap.get(currentEvent);
+        if (user != null ) {
+            System.out.println("Error creating group event, already belongs to user");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error: Something wrong in creating group event!"));
+            return;
+        }
         
-        GroupupUser user = getUser();
-        Integer dbId = scheduleToDbIdMap.get(currentEvent.getId());
+ 
+        GroupupUser currentUser = getUser();
         try {
-            if (dbId == null) {
-                utx.begin();
-            
-                GroupupTimeslot newSlot = new GroupupTimeslot();
-                Collection<GroupupUser> users = new ArrayList<GroupupUser>();
-                users.add(user);
-                newSlot.setTimeSlotCollection(users);
-                newSlot.setStartTime(currentEvent.getStartDate());
-                newSlot.setEndTime(currentEvent.getEndDate());
-                newSlot.setTitle(currentEvent.getTitle());
-                user.getGroupupTimeslotCollection().add(newSlot);
-                em.merge(user);
-                em.persist(newSlot);
-                utx.commit();
-                
-                scheduleToDbIdMap.put(currentEvent.getId(), newSlot.getId());
-                
-            } else {
-                utx.begin();
-                // retrieve existing timeslot from DB and update
-                Query query = em.createNamedQuery("GroupupTimeslot.findById");
-                query.setParameter("id", dbId);
-                Collection<GroupupTimeslot> slots = query.getResultList();
-                
-                if (slots.size() != 1) {
-                    System.out.println("error in # of corresponding events: " + slots.size());
-                } else {
-                    GroupupTimeslot slot = slots.iterator().next();
-                    slot.setStartTime(currentEvent.getStartDate());
-                    slot.setEndTime(currentEvent.getEndDate());
-                    slot.setTitle(currentEvent.getTitle());
-                    em.merge(slot);
-                }
-                utx.commit();
-            }
-        } catch (RollbackException e) {
-            System.out.println(e.getStackTrace().toString());
+            utx.begin();
+            GroupupTimeslot newGroupEventSlot = new GroupupTimeslot();
+            // Create new group event and set user to current user
+            Collection<GroupupUser> users = new ArrayList<GroupupUser>();
+            users.add(currentUser);
+            newGroupEventSlot.setTimeSlotCollection(users);
+            newGroupEventSlot.setStartTime(currentEvent.getStartDate());
+            newGroupEventSlot.setEndTime(currentEvent.getEndDate());
+            newGroupEventSlot.setTitle(currentEvent.getTitle());
+            newGroupEventSlot.setGroupId(groupCurrentDiff);
+
+            Collection<GroupupUser> invitedUsers = groupCurrentDiff.getGroupupUserCollection();
+            // Set invited users to other groupmembers
+            invitedUsers.remove(currentUser);
+            newGroupEventSlot.setTimeSlotInviteCollection(invitedUsers);
+            em.persist(newGroupEventSlot);
+            utx.commit();
         } catch (Exception e) {
-            // copy pasted this stuff, do sth about it later
-            System.out.println(e.getStackTrace().toString());
+            System.out.println(e.getMessage());
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error: Failed to add group event."));
+            return;
         }
+        
+        eventModel.addEvent(currentEvent); 
         currentEvent = new DefaultScheduleEvent();
-        * */
     }
     
     public void deleteEvent() {
@@ -213,13 +241,26 @@ public class GroupScheduleController implements Serializable {
 
     }
     
+    
     public void onEventSelect(ScheduleEntrySelectEvent selectEvent) {
+
         currentEvent = selectEvent.getScheduleEvent();
+        GroupupUser eventOwner = eventToUserMap.get(this.currentEvent);
+        if (eventOwner == null) {
+            eventOwner = getUser(); //currently logged in user
+        }
+        if (eventOwner == null) {
+            System.out.println("Error in getting owner of event");
+            currentEventUser = "Error, no owner!";
+        }
+        currentEventUser = eventOwner.getFname() + " " + eventOwner.getLname();
     }
     
     public void onDateSelect(DateSelectEvent selectEvent) {
         // selected an empty event, populate with defaults.
         currentEvent = new DefaultScheduleEvent("", selectEvent.getDate(), selectEvent.getDate());  
+        GroupupUser user = getUser();
+        currentEventUser = user.getFname() + " " + user.getLname();
     }
 
 
@@ -275,6 +316,14 @@ public class GroupScheduleController implements Serializable {
         return eventModel;
     }
 
+    public ScheduleEvent getCurrentEvent() {
+        return currentEvent;
+    }
+
+    public void setCurrentEvent(ScheduleEvent currentEvent) {
+        this.currentEvent = currentEvent;
+    }
+
     public void setEventModel(ScheduleModel eventModel) {
         this.eventModel = eventModel;
     }
@@ -305,6 +354,14 @@ public class GroupScheduleController implements Serializable {
 
     public void setGroupInviteList(List<GroupupGroup> groupInviteList) {
         this.groupInviteList = groupInviteList;
+    }
+
+    public List<GroupupTimeslot> getTimeslotInviteList() {
+        return timeslotInviteList;
+    }
+
+    public void setTimeslotInviteList(List<GroupupTimeslot> timeslotInviteList) {
+        this.timeslotInviteList = timeslotInviteList;
     }
 
     public List<String> getSelectedUserList() {
@@ -444,6 +501,7 @@ public class GroupScheduleController implements Serializable {
         loadGroupList();   
         
         loadGroupInvites();
+        loadGroupEventInvites();
     }
     
     public void loadGroupList() {
@@ -477,6 +535,12 @@ public class GroupScheduleController implements Serializable {
         
     }
     
+    public void loadGroupEventInvites() {
+        GroupupUser currentUser = getUser();
+        this.timeslotInviteList = new ArrayList(currentUser.getGroupupTimeslotInvites());
+        System.out.println("Loaded event invites: " + this.timeslotInviteList);
+    }
+    
     public void loadUsers() {
         Query query = em.createNamedQuery("GroupupUser.findAll");
         System.out.println("loading users: ");
@@ -492,11 +556,53 @@ public class GroupScheduleController implements Serializable {
     }
     
     public void acceptEventInvite() {
+        System.out.println("Accepted event invite");
+        Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         
+	String timeslotId = params.get("timeslotId");
+        System.out.println("Accepted invite for group event id    : " + timeslotId);
+        for (GroupupTimeslot slot : this.timeslotInviteList) {
+            if (slot.getId().toString().equals(timeslotId)) {
+                GroupupUser user = getUser();
+                
+                slot.addUser(user);
+                try {
+                    utx.begin();
+                    em.merge(slot);
+                    utx.commit();
+                    timeslotInviteList.remove(slot);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        // Inefficiently reload here to be sure
+        loadValues();
     }
     
     public void declineEventInvite() {
+        System.out.println("Declined event invite");
+        Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         
+	String timeslotId = params.get("timeslotId");
+        System.out.println("Declined invite for group event id    : " + timeslotId);
+        for (GroupupTimeslot slot : this.timeslotInviteList) {
+            if (slot.getId().toString().equals(timeslotId)) {
+                GroupupUser user = getUser();
+                
+                slot.removeUser(user);
+                try {
+                    utx.begin();
+                    em.merge(slot);
+                    utx.commit();
+                    timeslotInviteList.remove(slot);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        // Inefficiently reload here to be sure
+        loadValues();
     }
     
     public void acceptInvite() {
@@ -519,8 +625,7 @@ public class GroupScheduleController implements Serializable {
             }
         }
         // Inefficiently reload here to be sure
-        loadGroupList();
-        loadGroupInvites();
+        loadValues();
     }
     
     public void declineInvite() {
@@ -543,8 +648,7 @@ public class GroupScheduleController implements Serializable {
             }
         }
         // Inefficiently reload here to be sure
-        loadGroupList();
-        loadGroupInvites();
+        loadValues();
     }
     public String encodeUserString(GroupupUser user) {
         String userEncode = user.getFname() + " <" + user.getEmail() + ">";
