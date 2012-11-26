@@ -230,11 +230,12 @@ public class GroupScheduleController implements Serializable {
             // Set invited users to other groupmembers
             invitedUsers.remove(currentUser);
             newGroupEventSlot.setTimeSlotInviteCollection(invitedUsers);
+            System.out.append("Creating new group event: " + newGroupEventSlot.getTitle());
             em.persist(newGroupEventSlot);
             utx.commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-
+            e.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error: Failed to add group event."));
             return;
         }

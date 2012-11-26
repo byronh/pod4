@@ -13,6 +13,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -20,6 +21,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -44,24 +46,15 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GroupupTimeslot.findByEndTime", query = "SELECT g FROM GroupupTimeslot g WHERE g.endTime = :endTime")})
 public class GroupupTimeslot implements Serializable {
     private static final long serialVersionUID = 1L;
+    
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @NotNull
     @Column(name = "id")
     private Integer id;
     
     @Column(name = "title")
     private String title;
-    
-    // Not even used, hack to convert from int to day of week
-    @Transient
-    private String dayOfWeekString;
-    
-    @Transient
-    private String startTimeString;
-    
-    @Transient
-    private String endTimeString;
     
     @Column(name = "reccurance")
     private Short reccurance;
@@ -100,37 +93,6 @@ public class GroupupTimeslot implements Serializable {
     public GroupupTimeslot() {
        
     }
-    
-    @Transient
-    public String getGroupName() {
-        return groupId.getName();
-    }
-
-    public String getDayOfWeekString() {
-        return dayOfWeekString;
-    }
-
-    public void setDayOfWeekString(String dayOfWeekString) {
-        this.dayOfWeekString = dayOfWeekString;
-    }
-
-    public String getStartTimeString() {
-        return startTimeString;
-    }
-
-    public void setStartTimeString(String startTimeString) {
-        this.startTimeString = startTimeString;
-    }
-
-    public String getEndTimeString() {
-        return endTimeString;
-    }
-
-    public void setEndTimeString(String endTimeString) {
-        this.endTimeString = endTimeString;
-    }
-
-
     
     public void addUser(GroupupUser user) {
         if (this.timeSlotCollection.contains(user)) {
@@ -180,24 +142,6 @@ public class GroupupTimeslot implements Serializable {
 
     public void setDayOfWeek(Short dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
-                System.out.println("Day of week: ");
-        switch( dayOfWeek ) {
-            case 1:
-                dayOfWeekString = "Monday";
-            case 2:
-                dayOfWeekString= "Tuesday";
-            case 3:
-                dayOfWeekString = "Wednesday";
-            case 4:
-                dayOfWeekString= "Thursday";
-            case 5:
-                dayOfWeekString= "Friday";
-            case 6:
-                dayOfWeekString= "Saturday";
-            default:
-                System.out.println("ERROR no matching day of week: " + dayOfWeek);
-                dayOfWeekString= "ERROR";
-        }
     }
 
     public Date getStartTime() {
@@ -206,8 +150,6 @@ public class GroupupTimeslot implements Serializable {
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
-        DateFormat f = new SimpleDateFormat("hh:mm");
-        startTimeString = f.format(startTime);
     }
 
     public Date getEndTime() {
@@ -217,8 +159,6 @@ public class GroupupTimeslot implements Serializable {
     
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
-        DateFormat f = new SimpleDateFormat("hh:mm");
-        this.endTimeString = f.format(endTime);
     }
 
     public Collection<GroupupUser> getTimeSlotCollection() {

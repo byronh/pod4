@@ -60,4 +60,5 @@ for row in reader:
     query = "INSERT INTO `groupup_timeslot` (id, course_id, day_of_week, start_time, end_time, reccurance) " + \
             "VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.execute(query, tuple(row))
+    cursor.execute('update SEQUENCE SET SEQ_COUNT=20000 where SEQ_NAME="SEQ_GEN"')
 db.commit()
