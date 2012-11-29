@@ -36,7 +36,7 @@ body{
     right: 0;
     bottom: 70px; /*Set bottom value to HeightOfBottomFrameDiv*/
     overflow: auto; 
-    width:15%;
+    width:25%;
     
 /*    #menu{
     position: inherit;
@@ -101,7 +101,7 @@ body{
     position: inherit;
     right: 2%;
     top:10%;
-    width:80%;
+    width:70%;
     float:left;
     height:80%;
 }
