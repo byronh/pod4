@@ -54,15 +54,15 @@ and open the template in the editor.
                         </h:form>  
 
 
-                        <h:form id="edit_right_form" style="position:fixed;  top:15%; right:15%;width:20%;">
-                            <h:outputLabel value="Search UBC Course: " />  
-                                                    <p:autoComplete  id="searchCourse" value="#{scheduleController.selectedCourseString}"
+                        <h:form id="edit_right_form" style="position:fixed;  top:20%; right:15%;width:15%;">
+                            <h:outputLabel value="Search UBC Course: "/>  
+                                                    <p:autoComplete  style="width:180px;" id="searchCourse" value="#{scheduleController.selectedCourseString}"
                                                                      completeMethod="#{scheduleController.completeClasses}" >
                                                         <p:ajax event="itemSelect" listener="#{scheduleController.onSelectedClass}"  update="class_details" />  
                                                     </p:autoComplete>
                                                         
                             <br/><br/><br/><br/>
-                            <p:panel id="class_details" header="Course Details">
+                            <p:panel id="class_details" header="Course Details" style="width:200px;">
                                 <h:outputLabel value="Course: "/>
                                 <h:outputLabel value="#{scheduleController.selectedCourse.dept} #{scheduleController.selectedCourse.coursenum}" />
                                 <br/><br/>
