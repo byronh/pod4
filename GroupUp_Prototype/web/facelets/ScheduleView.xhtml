@@ -22,9 +22,9 @@ and open the template in the editor.
             <ui:define name="content">
                                
                 <p:panel id="contentPanel" header="Schedule View" >  
-                    <h:form id="scheduleForm" style="width: 55%">  
+                    <h:form id="scheduleForm" style="width: 95%;">  
                     
-                        <p:schedule id ="schedule" value="#{scheduleController.eventModel}" widgetVar="myschedule" draggable="false" resizable="false" view="agendaWeek" rightHeaderTemplate="" allDaySlot="false">  
+                        <p:schedule id ="schedule" aspectRatio="1.7" value="#{scheduleController.eventModel}" widgetVar="myschedule" draggable="false" resizable="false" view="agendaWeek" rightHeaderTemplate="" allDaySlot="false">  
 
                                 <p:ajax event="dateSelect" listener="#{scheduleController.onDateSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
                                 <p:ajax event="eventSelect" listener="#{scheduleController.onEventSelect}" update="eventDetails" oncomplete="eventDialog.show()" />  
